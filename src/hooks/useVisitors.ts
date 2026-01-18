@@ -22,7 +22,7 @@ export function useVisitors() {
 
     const trackVisitor = async () => {
       try {
-        const statsRef = doc(db, "settings", "visitors");
+        const statsRef = doc(db!, "settings", "visitors");
         const statsDoc = await getDoc(statsRef);
 
         if (statsDoc.exists()) {
