@@ -1,15 +1,19 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LogOut, Loader } from "lucide-react";
+import { LogOut, Loader, Eye } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { auth } from "../lib/firebase";
 import { useAuth } from "../hooks/useAuth";
 import { useProjects } from "../hooks/useProjects";
 import { useResume } from "../hooks/useResume";
+import { useVisitors } from "../hooks/useVisitors";
 import ProjectForm from "../components/admin/ProjectForm";
 import ResumeUpload from "../components/admin/ResumeUpload";
 import ProfileSettings from "../components/admin/ProfileSettings";
+import SkillsManager from "../components/admin/SkillsManager";
+import BentoGridManager from "../components/admin/BentoGridManager";
+import EducationManager from "../components/admin/EducationManager";
 import Button from "../components/ui/Button";
 import GlassCard from "../components/ui/GlassCard";
 
@@ -17,6 +21,7 @@ export default function Admin() {
   const { user, loading: authLoading } = useAuth();
   const { projects, loading: projectsLoading } = useProjects();
   const { resume, loading: resumeLoading } = useResume();
+  const { stats: visitorStats } = useVisitors();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -95,7 +100,7 @@ export default function Admin() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
+          className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8"
         >
           <GlassCard>
             <div className="text-center">
@@ -117,6 +122,17 @@ export default function Admin() {
                 {projects.filter((p) => p.liveUrl).length}
               </p>
               <p className="text-gray-400">Live Projects</p>
+            </div>
+          </GlassCard>
+          <GlassCard>
+            <div className="text-center">
+              <div className="flex items-center justify-center mb-2">
+                <Eye className="text-gradient-accent mr-2" size={28} />
+                <p className="text-4xl font-bold">
+                  {visitorStats.totalVisitors}
+                </p>
+              </div>
+              <p className="text-gray-400">Portfolio Visitors</p>
             </div>
           </GlassCard>
         </motion.div>
@@ -141,11 +157,41 @@ export default function Admin() {
           <ResumeUpload currentResumeUrl={resume?.url || undefined} />
         </motion.div>
 
-        {/* Project Management */}
+        {/* BentoGrid Management */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.23 }}
+          className="mb-8"
+        >
+          <BentoGridManager />
+        </motion.div>
+
+        {/* Education Management */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
+          className="mb-8"
+        >
+          <EducationManager />
+        </motion.div>
+
+        {/* Skills Management */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.27 }}
+          className="mb-8"
+        >
+          <SkillsManager />
+        </motion.div>
+
+        {/* Project Management */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.29 }}
         >
           <ProjectForm projects={projects} />
         </motion.div>

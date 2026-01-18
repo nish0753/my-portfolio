@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent } from "react";
-import { Upload, FileText, X, Download, Eye } from "lucide-react";
+import { Upload, FileText, X, Download, Eye, Link } from "lucide-react";
 import {
   ref,
   uploadBytesResumable,
@@ -10,6 +10,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { storage, db } from "../../lib/firebase";
 import Button from "../ui/Button";
 import GlassCard from "../ui/GlassCard";
+import Input from "../ui/Input";
 
 interface ResumeUploadProps {
   currentResumeUrl?: string;
@@ -20,6 +21,37 @@ export default function ResumeUpload({ currentResumeUrl }: ResumeUploadProps) {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [resumeUrl, setResumeUrl] = useState(currentResumeUrl || "");
   const [previewUrl, setPreviewUrl] = useState(currentResumeUrl || "");
+  const [urlInput, setUrlInput] = useState("");
+  const [showUrlInput, setShowUrlInput] = useState(false);
+
+  const handleUrlSubmit = async () => {
+    if (!urlInput.trim()) {
+      alert("Please enter a valid URL");
+      return;
+    }
+
+    if (!db) {
+      alert("Firebase is not configured.");
+      return;
+    }
+
+    try {
+      await setDoc(doc(db, "settings", "resume"), {
+        url: urlInput,
+        updatedAt: new Date().toISOString(),
+        fileName: "Resume",
+      });
+
+      setResumeUrl(urlInput);
+      setPreviewUrl(urlInput);
+      setUrlInput("");
+      setShowUrlInput(false);
+      alert("Resume URL saved successfully!");
+    } catch (error: any) {
+      console.error("Error saving resume URL:", error);
+      alert(`Error: ${error?.message || "Unknown error"}`);
+    }
+  };
 
   const handleFileSelect = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -63,7 +95,11 @@ export default function ResumeUpload({ currentResumeUrl }: ResumeUploadProps) {
         },
         (error) => {
           console.error("Upload error:", error);
-          alert("Error uploading resume. Please try again.");
+          console.error("Error code:", error.code);
+          console.error("Error message:", error.message);
+          alert(
+            `Error uploading resume: ${error.message || "Unknown error"}. Check console for details.`,
+          );
           setUploading(false);
         },
         async () => {
@@ -86,9 +122,13 @@ export default function ResumeUpload({ currentResumeUrl }: ResumeUploadProps) {
           alert("Resume uploaded successfully!");
         },
       );
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error uploading resume:", error);
-      alert("Error uploading resume. Please try again.");
+      console.error("Error code:", error?.code);
+      console.error("Error message:", error?.message);
+      alert(
+        `Error uploading resume: ${error?.message || "Unknown error"}. Check console for details.`,
+      );
       setUploading(false);
     }
   };
@@ -135,21 +175,67 @@ export default function ResumeUpload({ currentResumeUrl }: ResumeUploadProps) {
 
         {/* Upload Section */}
         {!resumeUrl && !uploading && (
-          <div className="border-2 border-dashed border-glass-border rounded-xl p-8 text-center hover:border-purple-400 transition-colors">
-            <label className="cursor-pointer block">
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={handleFileSelect}
-                className="hidden"
-              />
-              <Upload className="mx-auto mb-4 text-gray-400" size={48} />
-              <p className="text-lg font-semibold mb-2">Upload Resume</p>
-              <p className="text-sm text-gray-400">
-                Click to select a PDF file (max 5MB)
-              </p>
-            </label>
-          </div>
+          <>
+            <div className="border-2 border-dashed border-glass-border rounded-xl p-8 text-center hover:border-purple-400 transition-colors">
+              <label className="cursor-pointer block">
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                <Upload className="mx-auto mb-4 text-gray-400" size={48} />
+                <p className="text-lg font-semibold mb-2">Upload Resume</p>
+                <p className="text-sm text-gray-400">
+                  Click to select a PDF file (max 5MB)
+                </p>
+                <p className="text-xs text-red-400 mt-2">
+                  Note: Requires Firebase Blaze (paid) plan
+                </p>
+              </label>
+            </div>
+
+            <div className="text-center">
+              <p className="text-sm text-gray-400 mb-3">OR</p>
+              {!showUrlInput ? (
+                <Button
+                  onClick={() => setShowUrlInput(true)}
+                  variant="secondary"
+                  className="w-full"
+                >
+                  <Link className="mr-2" size={18} />
+                  Add Resume URL Instead (Free Alternative)
+                </Button>
+              ) : (
+                <div className="space-y-3">
+                  <Input
+                    type="url"
+                    placeholder="Enter resume URL (Google Drive, Dropbox, etc.)"
+                    value={urlInput}
+                    onChange={(e) => setUrlInput(e.target.value)}
+                  />
+                  <div className="flex gap-2">
+                    <Button onClick={handleUrlSubmit} className="flex-1">
+                      Save URL
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setShowUrlInput(false);
+                        setUrlInput("");
+                      }}
+                      variant="ghost"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    Tip: Upload to Google Drive, set to "Anyone with link can
+                    view", then paste the link here
+                  </p>
+                </div>
+              )}
+            </div>
+          </>
         )}
 
         {/* Upload Progress */}

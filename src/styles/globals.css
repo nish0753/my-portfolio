@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 222 47% 4%;
+    --background: 0 0% 4%;
     --foreground: 0 0% 100%;
     --card: 222 40% 8%;
     --card-foreground: 0 0% 100%;
@@ -38,6 +38,7 @@
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
+    background-attachment: fixed;
   }
 
   html {
@@ -47,14 +48,93 @@
 
 @layer utilities {
   .glass-effect {
-    @apply bg-glass backdrop-blur-xl border border-glass-border;
+    @apply bg-white/[0.02] backdrop-blur-xl border border-white/10 transition-all duration-300;
+  }
+
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+
+  .bento-item {
+    @apply glass rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 cursor-pointer;
   }
 
   .text-gradient {
-    @apply bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-white via-gray-300 to-gray-400 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-accent {
+    @apply bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent;
   }
 
   .hover-lift {
-    @apply transition-transform duration-300 hover:-translate-y-1;
+    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl;
+  }
+
+  .bg-dot-pattern {
+    background-image: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.05) 1px,
+      transparent 1px
+    );
+  }
+
+  .premium-card {
+    @apply relative group overflow-hidden rounded-2xl;
+  }
+
+  .premium-card::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(
+      135deg,
+      rgba(168, 85, 247, 0.5),
+      rgba(59, 130, 246, 0.5)
+    );
+    border-radius: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+  }
+
+  .premium-card:hover::before {
+    opacity: 0.3;
+  }
+
+  .gradient-border {
+    @apply relative;
+    background: linear-gradient(
+      135deg,
+      rgba(168, 85, 247, 0.2),
+      rgba(59, 130, 246, 0.2)
+    );
+    padding: 1px;
+    border-radius: 1rem;
+  }
+
+  .gradient-border > * {
+    @apply rounded-[calc(1rem-1px)];
+  }
+
+  .shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .glow-effect {
+    @apply shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all duration-300;
+  }
+
+  .glow-effect-blue {
+    @apply shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300;
   }
 }

@@ -1,22 +1,28 @@
 import { motion } from "framer-motion";
 import Hero from "../components/Hero";
 import BentoGrid from "../components/BentoGrid";
+import Skills from "../components/Skills";
+import Education from "../components/Education";
 import ProjectCard from "../components/ProjectCard";
 import { useProjects } from "../hooks/useProjects";
 import { useProfile } from "../hooks/useProfile";
+import { useVisitors } from "../hooks/useVisitors";
 import GlassCard from "../components/ui/GlassCard";
 
 export default function Home() {
   const { projects, loading } = useProjects();
   const { profile } = useProfile();
+  useVisitors(); // Track visitor on page load
 
   return (
     <div className="min-h-screen">
       <Hero />
 
-      <section id="about">
-        <BentoGrid />
-      </section>
+      <BentoGrid />
+
+      <Skills />
+
+      <Education />
 
       <section id="projects" className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
@@ -58,17 +64,18 @@ export default function Home() {
           >
             <GlassCard className="text-center">
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                <span className="text-gradient">Let's Work Together</span>
+                <span className="text-gradient">Get In Touch</span>
               </h2>
               <p className="text-xl text-gray-400 mb-8">
-                Have a project in mind? Let's create something amazing together.
+                Let's connect and explore opportunities to create something
+                amazing together.
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
                 <a
                   href={`mailto:${profile.email}`}
                   className="px-8 py-4 rounded-xl bg-white text-black font-semibold hover:bg-gray-200 transition-colors"
                 >
-                  Get In Touch
+                  Email
                 </a>
                 {profile.linkedin && (
                   <a
@@ -99,7 +106,8 @@ export default function Home() {
       <footer className="py-8 px-6 border-t border-glass-border">
         <div className="max-w-6xl mx-auto text-center text-gray-400">
           <p>
-            &copy; {new Date().getFullYear()} {profile.name}. All rights reserved.
+            &copy; {new Date().getFullYear()} {profile.name}. All rights
+            reserved.
           </p>
         </div>
       </footer>
