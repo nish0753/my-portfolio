@@ -39,6 +39,46 @@ export default function BentoGridManager() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState<Partial<BentoItem>>({});
 
+  const loadSampleData = async () => {
+    if (!db) return;
+    if (!confirm("This will add default items to Firebase. Continue?")) return;
+
+    const defaultItems = [
+      {
+        title: "Full-Stack Development",
+        description:
+          "I specialize in building complete web applications from concept to deployment. From responsive frontends with React and TypeScript to robust backends with Node.js and cloud services, I deliver end-to-end solutions that scale.",
+        icon: "Code2",
+        category: "main",
+        order: 0,
+      },
+      {
+        title: "UI/UX Design",
+        description: "Creating beautiful interfaces",
+        icon: "Palette",
+        category: "skill",
+        order: 1,
+      },
+      {
+        title: "Performance",
+        description: "Optimizing for speed",
+        icon: "Zap",
+        category: "skill",
+        order: 2,
+      },
+    ];
+
+    try {
+      for (const item of defaultItems) {
+        await addDoc(collection(db, "bentoGrid"), item);
+      }
+      alert("Sample data loaded successfully!");
+    } catch (error) {
+      console.error("Error loading sample data:", error);
+      alert("Error loading sample data");
+    }
+  };
+
   const handleAdd = async () => {
     if (!db || !newItem.title.trim() || !newItem.description.trim()) {
       alert("Please fill in all fields");
@@ -105,7 +145,14 @@ export default function BentoGridManager() {
 
   return (
     <GlassCard>
-      <h2 className="text-2xl font-bold mb-6">Manage "What I Do" Section</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">Manage "What I Do" Section</h2>
+        {items.length === 0 && (
+          <Button onClick={loadSampleData} variant="secondary">
+            Load Sample Data
+          </Button>
+        )}
+      </div>
 
       {/* Add New Item */}
       <div className="mb-8 p-4 border border-glass-border rounded-lg">

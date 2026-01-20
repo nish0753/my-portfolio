@@ -19,6 +19,32 @@ export default function SkillsManager() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState<Partial<Skill>>({});
 
+  const loadSampleData = async () => {
+    if (!db) return;
+    if (!confirm("This will add default skills to Firebase. Continue?")) return;
+
+    const defaultSkills = [
+      { name: "React", category: "Frontend", order: 0 },
+      { name: "TypeScript", category: "Frontend", order: 1 },
+      { name: "Tailwind CSS", category: "Frontend", order: 2 },
+      { name: "Python", category: "Backend", order: 3 },
+      { name: "Node.js", category: "Backend", order: 4 },
+      { name: "Firebase", category: "Backend", order: 5 },
+      { name: "Pandas", category: "Data Science", order: 6 },
+      { name: "Git", category: "Tools", order: 7 },
+    ];
+
+    try {
+      for (const skill of defaultSkills) {
+        await addDoc(collection(db, "skills"), skill);
+      }
+      alert("Sample skills loaded successfully!");
+    } catch (error) {
+      console.error("Error loading sample data:", error);
+      alert("Error loading sample data");
+    }
+  };
+
   const handleAdd = async () => {
     if (!db || !newSkill.name.trim() || !newSkill.category.trim()) {
       alert("Please fill in all fields");
@@ -73,7 +99,14 @@ export default function SkillsManager() {
 
   return (
     <GlassCard>
-      <h2 className="text-2xl font-bold mb-6">Manage Skills</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">Manage Skills</h2>
+        {skills.length === 0 && (
+          <Button onClick={loadSampleData} variant="secondary">
+            Load Sample Data
+          </Button>
+        )}
+      </div>
 
       {/* Add New Skill */}
       <div className="mb-8 p-4 border border-glass-border rounded-lg">
