@@ -54,14 +54,6 @@ export default function Navbar() {
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-500 group-hover:w-full transition-all duration-300" />
                 </a>
               ))}
-              <Link
-                to="/admin"
-                className="px-4 py-2 rounded-lg glass-effect hover:bg-white/10 hover:border-white/30 transition-all duration-300 font-medium group"
-              >
-                <span className="text-gradient group-hover:opacity-100">
-                  Admin
-                </span>
-              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -99,13 +91,6 @@ export default function Navbar() {
                     {item.name}
                   </a>
                 ))}
-                <Link
-                  to="/admin"
-                  onClick={() => setIsOpen(false)}
-                  className="px-3 py-2 text-gray-300 font-medium rounded-lg hover:bg-white/10 hover:text-white transition-all duration-300"
-                >
-                  Admin
-                </Link>
               </div>
             </motion.div>
           )}
