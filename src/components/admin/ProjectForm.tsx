@@ -129,12 +129,18 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
 
   const handleDelete = async (projectId: string) => {
     if (!confirm("Are you sure you want to delete this project?")) return;
-    if (!db) return;
+    if (!db) {
+      alert("Firebase is not configured.");
+      return;
+    }
     try {
       await deleteDoc(doc(db, "projects", projectId));
+      alert("Project deleted successfully!");
     } catch (error) {
       console.error("Error deleting project:", error);
-      alert("Failed to delete project. Please try again.");
+      alert(
+        `Failed to delete project: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   };
 
