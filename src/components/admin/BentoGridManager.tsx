@@ -147,11 +147,9 @@ export default function BentoGridManager() {
     <GlassCard>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Manage "What I Do" Section</h2>
-        {items.length === 0 && (
-          <Button onClick={loadSampleData} variant="secondary">
-            Load Sample Data
-          </Button>
-        )}
+        <Button onClick={loadSampleData} variant="secondary">
+          Load Sample Data
+        </Button>
       </div>
 
       {/* Add New Item */}
