@@ -4,14 +4,16 @@ import { signInWithPopup, signOut } from "firebase/auth";
 import { auth, googleProvider } from "../lib/firebase";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { isAuthorizedAdmin } from "../lib/auth";
 import Button from "../components/ui/Button";
 import GlassCard from "../components/ui/GlassCard";
-import { LogIn, Loader } from "lucide-react";
+import { LogIn, Loader, ShieldAlert } from "lucide-react";
 
 export default function Login() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [signingIn, setSigningIn] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   const handleGoogleSignIn = async () => {
     if (!auth || !googleProvider) {
@@ -21,8 +23,20 @@ export default function Login() {
       return;
     }
     setSigningIn(true);
+    setAccessDenied(false);
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      const userEmail = result.user.email;
+
+      // Check if user is authorized
+      if (!isAuthorizedAdmin(userEmail)) {
+        // Sign them out immediately
+        await signOut(auth);
+        setAccessDenied(true);
+        setSigningIn(false);
+        return;
+      }
+
       navigate("/admin");
     } catch (error) {
       console.error("Error signing in:", error);
@@ -98,6 +112,22 @@ export default function Login() {
           <p className="text-gray-400 mb-8">
             Sign in with your Google account to access the admin dashboard.
           </p>
+
+          {accessDenied && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30"
+            >
+              <div className="flex items-center justify-center gap-2 text-red-400 mb-2">
+                <ShieldAlert size={20} />
+                <span className="font-semibold">Access Denied</span>
+              </div>
+              <p className="text-sm text-gray-400">
+                Your email is not authorized to access the admin panel.
+              </p>
+            </motion.div>
+          )}
           <Button
             onClick={handleGoogleSignIn}
             disabled={signingIn}

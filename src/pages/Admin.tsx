@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LogOut, Loader, Eye } from "lucide-react";
+import { LogOut, Loader, Eye, ShieldAlert } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { auth } from "../lib/firebase";
 import { useAuth } from "../hooks/useAuth";
+import { isAuthorizedAdmin } from "../lib/auth";
 import { useProjects } from "../hooks/useProjects";
 import { useResume } from "../hooks/useResume";
 import { useVisitors } from "../hooks/useVisitors";
@@ -28,6 +29,14 @@ export default function Admin() {
     // Only require authentication if Firebase is configured
     if (auth && !authLoading && !user) {
       navigate("/login");
+    }
+
+    // Check if logged-in user is authorized
+    if (auth && !authLoading && user && !isAuthorizedAdmin(user.email)) {
+      // Sign them out and redirect
+      signOut(auth).then(() => {
+        navigate("/login");
+      });
     }
   }, [user, authLoading, navigate]);
 
