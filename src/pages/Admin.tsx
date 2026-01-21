@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LogOut, Loader, Eye } from "lucide-react";
+import { LogOut, Loader, Eye, RotateCcw } from "lucide-react";
 import { signOut } from "firebase/auth";
-import { auth } from "../lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../lib/firebase";
 import { useAuth } from "../hooks/useAuth";
 import { isAuthorizedAdmin } from "../lib/auth";
 import { useProjects } from "../hooks/useProjects";
@@ -24,6 +25,27 @@ export default function Admin() {
   const { resume, loading: resumeLoading } = useResume();
   const { stats: visitorStats } = useVisitors();
   const navigate = useNavigate();
+  const [resettingVisitors, setResettingVisitors] = useState(false);
+
+  const handleResetVisitorCount = async () => {
+    if (!db) return;
+    if (!confirm("Are you sure you want to reset the visitor count to 0?")) return;
+    
+    setResettingVisitors(true);
+    try {
+      await setDoc(doc(db, "settings", "visitors"), {
+        totalVisitors: 0,
+        lastVisit: new Date().toISOString(),
+      });
+      alert("Visitor count reset to 0!");
+      window.location.reload(); // Refresh to see updated count
+    } catch (error) {
+      console.error("Error resetting visitor count:", error);
+      alert("Failed to reset visitor count");
+    } finally {
+      setResettingVisitors(false);
+    }
+  };
 
   useEffect(() => {
     // Only require authentication if Firebase is configured
@@ -141,7 +163,15 @@ export default function Admin() {
                   {visitorStats.totalVisitors}
                 </p>
               </div>
-              <p className="text-gray-400">Portfolio Visitors</p>
+              <p className="text-gray-400 mb-2">Portfolio Visitors</p>
+              <button
+                onClick={handleResetVisitorCount}
+                disabled={resettingVisitors}
+                className="text-xs text-gray-500 hover:text-purple-400 flex items-center justify-center gap-1 mx-auto transition-colors"
+              >
+                <RotateCcw size={12} />
+                Reset
+              </button>
             </div>
           </GlassCard>
         </motion.div>
