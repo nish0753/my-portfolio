@@ -29,8 +29,9 @@ export default function Admin() {
 
   const handleResetVisitorCount = async () => {
     if (!db) return;
-    if (!confirm("Are you sure you want to reset the visitor count to 0?")) return;
-    
+    if (!confirm("Are you sure you want to reset the visitor count to 0?"))
+      return;
+
     setResettingVisitors(true);
     try {
       await setDoc(doc(db, "settings", "visitors"), {
