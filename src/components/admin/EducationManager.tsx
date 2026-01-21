@@ -37,6 +37,62 @@ export default function EducationManager() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState<Partial<EducationItem>>({});
 
+  const loadSampleData = async () => {
+    if (!db) return;
+    if (
+      !confirm("This will add default education items to Firebase. Continue?")
+    )
+      return;
+
+    const defaultItems = [
+      {
+        degree: "Bachelor of Science",
+        school: "University Name",
+        field: "Computer Science",
+        year: "2018 - 2022",
+        description:
+          "Specialized in Web Development and Software Engineering with focus on full-stack development",
+        icon: "GraduationCap",
+        certificateUrl: "",
+        order: 0,
+      },
+      {
+        degree: "Advanced Certification",
+        school: "Online Platform",
+        field: "Full-Stack Development",
+        year: "2022 - 2023",
+        description:
+          "Comprehensive training in React, Node.js, and modern web development practices",
+        icon: "BookOpen",
+        certificateUrl: "",
+        order: 1,
+      },
+      {
+        degree: "Professional Diploma",
+        school: "Training Institute",
+        field: "UI/UX Design",
+        year: "2023",
+        description:
+          "Mastered design principles, prototyping, and user-centered design methodology",
+        icon: "Award",
+        certificateUrl: "",
+        order: 2,
+      },
+    ];
+
+    try {
+      for (const item of defaultItems) {
+        await addDoc(collection(db, "education"), item);
+      }
+      alert(
+        "Sample education data loaded successfully! You can now edit or delete them.",
+      );
+    } catch (error) {
+      console.error("Error loading sample data:", error);
+      alert("Error loading sample data");
+    }
+  };
+
   const handleAdd = async () => {
     if (
       !db ||
@@ -118,7 +174,12 @@ export default function EducationManager() {
 
   return (
     <GlassCard>
-      <h2 className="text-2xl font-bold mb-6">Manage Education Section</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">Manage Education Section</h2>
+        <Button onClick={loadSampleData} variant="secondary">
+          Load Sample Data
+        </Button>
+      </div>
 
       {/* Add New Item */}
       <div className="mb-8 p-4 border border-glass-border rounded-lg">

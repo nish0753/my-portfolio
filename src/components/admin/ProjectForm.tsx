@@ -193,16 +193,14 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold">Manage Projects</h2>
         <div className="flex gap-3">
-          {projects.length === 0 && (
-            <Button
-              onClick={handleAddSampleProjects}
-              variant="secondary"
-              disabled={loading}
-            >
-              <Sparkles className="mr-2" size={20} />
-              Add Sample Projects
-            </Button>
-          )}
+          <Button
+            onClick={handleAddSampleProjects}
+            variant="secondary"
+            disabled={loading}
+          >
+            <Sparkles className="mr-2" size={20} />
+            Load Sample Data
+          </Button>
           <Button
             onClick={() => {
               resetForm();
