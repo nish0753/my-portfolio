@@ -54,6 +54,12 @@ export function useVisitors() {
       }
     };
 
+    // If auth is not configured, track as non-admin
+    if (!auth) {
+      checkAndTrack(false);
+      return;
+    }
+
     // Wait briefly for auth state, then track
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       const isAdmin = user ? isAuthorizedAdmin(user.email) : false;
