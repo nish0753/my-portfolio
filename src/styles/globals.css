@@ -33,6 +33,34 @@
     --glass-hover: 0 0% 100% / 0.06;
   }
 
+  /* Light mode variables */
+  .light {
+    --background: 0 0% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 222 47% 11%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 222 47% 11%;
+
+    /* Glass effect variables for light mode */
+    --glass-bg: 222 47% 11% / 0.03;
+    --glass-border: 222 47% 11% / 0.1;
+    --glass-hover: 222 47% 11% / 0.06;
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings:
@@ -41,26 +69,64 @@
     background-attachment: fixed;
   }
 
+  /* Dark mode body background */
+  .dark body {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+  }
+
+  /* Light mode body background */
+  .light body {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f8fafc 100%);
+  }
+
   html {
     scroll-behavior: smooth;
   }
 }
 
 @layer utilities {
-  .glass-effect {
+  /* Dark mode glass effect */
+  .dark .glass-effect {
     @apply bg-white/[0.02] backdrop-blur-xl border border-white/10 transition-all duration-300;
+  }
+
+  /* Light mode glass effect */
+  .light .glass-effect {
+    @apply bg-gray-900/[0.02] backdrop-blur-xl border border-gray-900/10 shadow-lg shadow-gray-200/50 transition-all duration-300;
+  }
+
+  .glass-effect {
+    @apply bg-white/[0.02] dark:bg-white/[0.02] backdrop-blur-xl border border-white/10 dark:border-white/10 transition-all duration-300;
   }
 
   .glass {
     @apply bg-white/5 backdrop-blur-md border border-white/10;
   }
 
+  .light .glass {
+    @apply bg-gray-900/5 backdrop-blur-md border border-gray-900/10 shadow-md;
+  }
+
   .bento-item {
     @apply glass rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 cursor-pointer;
   }
 
-  .text-gradient {
+  .light .bento-item {
+    @apply hover:bg-gray-900/5;
+  }
+
+  /* Dark mode gradient text */
+  .dark .text-gradient {
     @apply bg-gradient-to-r from-white via-gray-300 to-gray-400 bg-clip-text text-transparent;
+  }
+
+  /* Light mode gradient text */
+  .light .text-gradient {
+    @apply bg-gradient-to-r from-gray-900 via-gray-700 to-gray-800 bg-clip-text text-transparent;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-white via-gray-300 to-gray-400 dark:from-white dark:via-gray-300 dark:to-gray-400 bg-clip-text text-transparent;
   }
 
   .text-gradient-accent {

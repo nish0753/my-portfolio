@@ -37,6 +37,9 @@ export default function Login() {
         return;
       }
 
+      // Mark this device as admin device (for visitor tracking)
+      localStorage.setItem("portfolio-admin-device", "true");
+
       navigate("/admin");
     } catch (error) {
       console.error("Error signing in:", error);

@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { doc, getDoc, setDoc, updateDoc, increment } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
-import { db, auth } from "../lib/firebase";
-import { isAuthorizedAdmin } from "../lib/auth";
+import { db } from "../lib/firebase";
 
 export interface VisitorStats {
   totalVisitors: number;
   lastVisit: string;
+}
+
+// Check if current device is admin's device
+function isAdminDevice(): boolean {
+  return localStorage.getItem("portfolio-admin-device") === "true";
 }
 
 export function useVisitors() {
@@ -22,14 +25,16 @@ export function useVisitors() {
       return;
     }
 
-    // Check if current user is admin before tracking
-    const checkAndTrack = async (isAdmin: boolean) => {
+    const trackVisitor = async () => {
+      // Skip counting if this is admin's device
+      const isAdmin = isAdminDevice();
+
       try {
         const statsRef = doc(db!, "settings", "visitors");
         const statsDoc = await getDoc(statsRef);
 
         if (statsDoc.exists()) {
-          // Only increment if NOT admin
+          // Only increment if NOT admin device
           if (!isAdmin) {
             await updateDoc(statsRef, {
               totalVisitors: increment(1),
@@ -54,29 +59,7 @@ export function useVisitors() {
       }
     };
 
-    // If auth is not configured, track as non-admin
-    if (!auth) {
-      checkAndTrack(false);
-      return;
-    }
-
-    // Wait briefly for auth state, then track
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      const isAdmin = user ? isAuthorizedAdmin(user.email) : false;
-      checkAndTrack(isAdmin);
-    });
-
-    // Fallback: if auth doesn't respond quickly, track as non-admin
-    const timeout = setTimeout(() => {
-      if (loading) {
-        checkAndTrack(false);
-      }
-    }, 1000);
-
-    return () => {
-      unsubscribe();
-      clearTimeout(timeout);
-    };
+    trackVisitor();
   }, []);
 
   return { stats, loading };
