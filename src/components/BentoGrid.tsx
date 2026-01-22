@@ -123,15 +123,27 @@ export const BentoGrid = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
-                  className="bento-item"
+                  className="bento-item flex flex-col"
                 >
                   <div className="w-12 h-12 glass rounded-xl flex items-center justify-center mb-4">
                     <IconComponent className="w-6 h-6 text-foreground" />
                   </div>
                   <h4 className="text-lg font-semibold mb-2">{item.title}</h4>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground mb-3">
                     {item.description}
                   </p>
+                  {item.technologies && item.technologies.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-auto pt-3">
+                      {item.technologies.map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-2 py-0.5 text-xs glass rounded text-muted-foreground"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </motion.div>
               );
             }

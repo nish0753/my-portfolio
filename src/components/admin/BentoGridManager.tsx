@@ -51,47 +51,73 @@ export default function BentoGridManager() {
       {
         title: "Data Science & Machine Learning",
         description:
-          "I build predictive models and data pipelines that solve real business problems. From exploratory analysis to production-ready ML systems, I turn raw data into actionable insights using Python, SQL, and modern ML frameworks.",
+          "I build predictive models and data pipelines to solve business problems, taking projects from exploratory data analysis to production-ready ML systems.",
         icon: "Code2",
         category: "main",
         order: 0,
-        technologies: ["Python", "SQL", "Pandas", "Scikit-learn", "Streamlit"],
+        technologies: [
+          "Python",
+          "SQL",
+          "Pandas",
+          "NumPy",
+          "Scikit-learn",
+          "Feature Engineering",
+          "Model Evaluation",
+        ],
       },
       {
-        title: "Generative AI & LLMs",
+        title: "Generative AI & LLM Applications",
         description:
-          "Building AI agents, RAG systems, and LLM-powered applications",
+          "I develop GenAI solutions such as LLM-powered applications, retrieval-augmented generation (RAG) systems, and tool-using AI agents.",
         icon: "Sparkles",
         category: "skill",
         order: 1,
+        technologies: [
+          "LLMs",
+          "Prompt Engineering",
+          "RAG",
+          "LangChain",
+          "Vector Databases",
+        ],
       },
       {
-        title: "ML Model Development",
-        description: "Feature engineering, model training, and evaluation",
-        icon: "Zap",
-        category: "skill",
-        order: 2,
-      },
-      {
-        title: "End-to-End Deployment",
-        description: "From Jupyter notebooks to production APIs",
+        title: "ML Engineering & Deployment",
+        description:
+          "I focus on deploying ML models into scalable applications, transforming notebooks into APIs and integrating them into real products.",
         icon: "Rocket",
         category: "skill",
-        order: 3,
+        order: 2,
+        technologies: [
+          "Flask / FastAPI",
+          "APIs",
+          "Model Serving",
+          "Performance Optimization",
+        ],
       },
       {
-        title: "Full-Stack for AI",
-        description: "React, Node.js, and cloud services to deploy ML products",
+        title: "Full-Stack for AI Products",
+        description:
+          "I use full-stack technologies to build and deploy ML-powered applications with clean APIs and user-friendly interfaces.",
         icon: "Globe",
         category: "skill",
-        order: 4,
+        order: 3,
+        technologies: [
+          "React",
+          "TypeScript",
+          "Node.js",
+          "PostgreSQL",
+          "Tailwind",
+          "Cloud Basics",
+        ],
       },
       {
-        title: "Data Engineering",
-        description: "ETL pipelines and data infrastructure",
+        title: "Data Engineering (Foundational)",
+        description:
+          "I design basic ETL pipelines and data workflows to support analytics and machine learning systems.",
         icon: "Layers",
         category: "skill",
-        order: 5,
+        order: 4,
+        technologies: ["ETL", "Data Pipelines", "SQL", "Data Modeling"],
       },
     ];
 
@@ -234,14 +260,14 @@ export default function BentoGridManager() {
         </div>
         <div className="mb-4">
           <Input
-            placeholder="Technologies (comma-separated, e.g. Python, SQL, Pandas) - for main items"
+            placeholder="Skills (comma-separated, e.g. Python, SQL, Pandas)"
             value={newItem.technologies}
             onChange={(e) =>
               setNewItem({ ...newItem, technologies: e.target.value })
             }
           />
           <p className="text-xs text-gray-400 mt-1">
-            Only shown for 'main' category items
+            Skills shown as tags below the description
           </p>
         </div>
         <Button onClick={handleAdd} className="w-full">
@@ -313,22 +339,20 @@ export default function BentoGridManager() {
                           ))}
                         </select>
                       </div>
-                      {editData.category === "main" && (
-                        <Input
-                          value={(editData.technologies || []).join(", ")}
-                          onChange={(e) =>
-                            setEditData({
-                              ...editData,
-                              technologies: e.target.value
-                                .split(",")
-                                .map((t) => t.trim())
-                                .filter(Boolean),
-                            })
-                          }
-                          placeholder="Technologies (comma-separated)"
-                          className="mt-2"
-                        />
-                      )}
+                      <Input
+                        value={(editData.technologies || []).join(", ")}
+                        onChange={(e) =>
+                          setEditData({
+                            ...editData,
+                            technologies: e.target.value
+                              .split(",")
+                              .map((t) => t.trim())
+                              .filter(Boolean),
+                          })
+                        }
+                        placeholder="Skills (comma-separated, e.g. Python, SQL, Pandas)"
+                        className="mt-2"
+                      />
                     </div>
                     <Button onClick={handleSaveEdit} size="sm">
                       <Save size={16} />
