@@ -78,17 +78,26 @@ export default function Hero() {
             className="flex flex-col items-center gap-6"
           >
             {/* Main buttons row */}
-            <div className="flex gap-4 justify-center flex-wrap">
+            <div className="flex gap-4 justify-center flex-wrap items-center">
               {resume?.url && (
                 <Button
                   size="lg"
                   onClick={handleResumeDownload}
-                  className="group bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+                  variant="secondary"
+                  className="group"
                 >
                   <Download className="inline-block mr-2" size={18} />
                   View Resume
                 </Button>
               )}
+              <Button
+                size="lg"
+                onClick={scrollToProjects}
+                className="group bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 font-bold"
+              >
+                Show My Work
+                <ArrowDown className="inline-block ml-2" size={18} />
+              </Button>
               {profile.github && (
                 <Button
                   size="lg"
@@ -101,18 +110,6 @@ export default function Hero() {
                 </Button>
               )}
             </div>
-
-            {/* Show my work link */}
-            <button
-              onClick={scrollToProjects}
-              className="flex flex-col items-center gap-2 text-gray-400 hover:text-purple-400 transition-colors duration-300 group mt-4"
-            >
-              <span className="text-sm font-medium">Show my work</span>
-              <ArrowDown
-                size={20}
-                className="animate-bounce group-hover:text-purple-400 transition-colors"
-              />
-            </button>
           </motion.div>
         </div>
       </div>
