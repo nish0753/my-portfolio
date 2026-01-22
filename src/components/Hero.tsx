@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Download } from "lucide-react";
+import { Download, Github, ArrowDown } from "lucide-react";
 import Button from "./ui/Button";
 import { useResume } from "../hooks/useResume";
 import { useProfile } from "../hooks/useProfile";
@@ -75,26 +75,44 @@ export default function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex gap-4 justify-center flex-wrap"
+            className="flex flex-col items-center gap-6"
           >
-            <Button
-              size="lg"
+            {/* Main buttons row */}
+            <div className="flex gap-4 justify-center flex-wrap">
+              {resume?.url && (
+                <Button
+                  size="lg"
+                  onClick={handleResumeDownload}
+                  className="group bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+                >
+                  <Download className="inline-block mr-2" size={18} />
+                  View Resume
+                </Button>
+              )}
+              {profile.github && (
+                <Button
+                  size="lg"
+                  onClick={() => window.open(profile.github, "_blank")}
+                  variant="secondary"
+                  className="group"
+                >
+                  <Github className="inline-block mr-2" size={20} />
+                  GitHub
+                </Button>
+              )}
+            </div>
+
+            {/* Show my work link */}
+            <button
               onClick={scrollToProjects}
-              className="group bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+              className="flex flex-col items-center gap-2 text-gray-400 hover:text-purple-400 transition-colors duration-300 group mt-4"
             >
-              Show my work
-            </Button>
-            {resume?.url && (
-              <Button
-                size="lg"
-                onClick={handleResumeDownload}
-                variant="secondary"
-                className="group"
-              >
-                <Download className="inline-block mr-2" size={18} />
-                Resume
-              </Button>
-            )}
+              <span className="text-sm font-medium">Show my work</span>
+              <ArrowDown
+                size={20}
+                className="animate-bounce group-hover:text-purple-400 transition-colors"
+              />
+            </button>
           </motion.div>
         </div>
       </div>
