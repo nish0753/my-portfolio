@@ -24,14 +24,25 @@ export default function SkillsManager() {
     if (!confirm("This will add default skills to Firebase. Continue?")) return;
 
     const defaultSkills = [
-      { name: "React", category: "Frontend", order: 0 },
-      { name: "TypeScript", category: "Frontend", order: 1 },
-      { name: "Tailwind CSS", category: "Frontend", order: 2 },
-      { name: "Python", category: "Backend", order: 3 },
-      { name: "Node.js", category: "Backend", order: 4 },
-      { name: "Firebase", category: "Backend", order: 5 },
-      { name: "Pandas", category: "Data Science", order: 6 },
-      { name: "Git", category: "Tools", order: 7 },
+      // Core Skills
+      { name: "Python", category: "Core Skills", order: 0 },
+      { name: "SQL", category: "Core Skills", order: 1 },
+      { name: "Pandas", category: "Core Skills", order: 2 },
+      { name: "NumPy", category: "Core Skills", order: 3 },
+      { name: "Data Cleaning & EDA", category: "Core Skills", order: 4 },
+      { name: "Machine Learning", category: "Core Skills", order: 5 },
+      // ML & AI
+      { name: "Scikit-learn", category: "ML & AI", order: 6 },
+      { name: "Feature Engineering", category: "ML & AI", order: 7 },
+      { name: "Model Evaluation", category: "ML & AI", order: 8 },
+      { name: "Generative AI (LLMs)", category: "ML & AI", order: 9 },
+      { name: "Prompt Engineering", category: "ML & AI", order: 10 },
+      { name: "RAG", category: "ML & AI", order: 11 },
+      // Tools
+      { name: "Git & GitHub", category: "Tools", order: 12 },
+      { name: "Jupyter Notebook", category: "Tools", order: 13 },
+      { name: "Streamlit", category: "Tools", order: 14 },
+      { name: "Flask", category: "Tools", order: 15 },
     ];
 
     try {

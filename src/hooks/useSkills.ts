@@ -10,18 +10,25 @@ export interface Skill {
 }
 
 const DEFAULT_SKILLS: Skill[] = [
-  { id: "1", name: "React", category: "Frontend", order: 0 },
-  { id: "2", name: "TypeScript", category: "Frontend", order: 1 },
-  { id: "3", name: "Tailwind CSS", category: "Frontend", order: 2 },
-  { id: "4", name: "Python", category: "Backend", order: 3 },
-  { id: "5", name: "Node.js", category: "Backend", order: 4 },
-  { id: "6", name: "Firebase", category: "Backend", order: 5 },
-  { id: "7", name: "Pandas", category: "Data Science", order: 6 },
-  { id: "8", name: "NumPy", category: "Data Science", order: 7 },
-  { id: "9", name: "Scikit-learn", category: "Data Science", order: 8 },
-  { id: "10", name: "Git", category: "Tools", order: 9 },
-  { id: "11", name: "VS Code", category: "Tools", order: 10 },
-  { id: "12", name: "Docker", category: "Tools", order: 11 },
+  // Core Skills
+  { id: "1", name: "Python", category: "Core Skills", order: 0 },
+  { id: "2", name: "SQL", category: "Core Skills", order: 1 },
+  { id: "3", name: "Pandas", category: "Core Skills", order: 2 },
+  { id: "4", name: "NumPy", category: "Core Skills", order: 3 },
+  { id: "5", name: "Data Cleaning & EDA", category: "Core Skills", order: 4 },
+  { id: "6", name: "Machine Learning", category: "Core Skills", order: 5 },
+  // ML & AI
+  { id: "7", name: "Scikit-learn", category: "ML & AI", order: 6 },
+  { id: "8", name: "Feature Engineering", category: "ML & AI", order: 7 },
+  { id: "9", name: "Model Evaluation", category: "ML & AI", order: 8 },
+  { id: "10", name: "Generative AI (LLMs)", category: "ML & AI", order: 9 },
+  { id: "11", name: "Prompt Engineering", category: "ML & AI", order: 10 },
+  { id: "12", name: "RAG", category: "ML & AI", order: 11 },
+  // Tools
+  { id: "13", name: "Git & GitHub", category: "Tools", order: 12 },
+  { id: "14", name: "Jupyter Notebook", category: "Tools", order: 13 },
+  { id: "15", name: "Streamlit", category: "Tools", order: 14 },
+  { id: "16", name: "Flask", category: "Tools", order: 15 },
 ];
 
 export function useSkills() {
