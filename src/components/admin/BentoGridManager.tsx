@@ -16,14 +16,17 @@ import GlassCard from "../ui/GlassCard";
 
 const ICON_OPTIONS = [
   "Code2",
-  "Palette",
+  "Sparkles",
   "Zap",
   "Globe",
   "Layers",
-  "Sparkles",
-  "Star",
   "Rocket",
+  "Star",
   "Lightbulb",
+  "Brain",
+  "Database",
+  "BarChart",
+  "Bot",
 ];
 
 const CATEGORY_OPTIONS = ["main", "skill", "stat"];
@@ -45,26 +48,47 @@ export default function BentoGridManager() {
 
     const defaultItems = [
       {
-        title: "Full-Stack Development",
+        title: "Data Science & Machine Learning",
         description:
-          "I specialize in building complete web applications from concept to deployment. From responsive frontends with React and TypeScript to robust backends with Node.js and cloud services, I deliver end-to-end solutions that scale.",
+          "I build predictive models and data pipelines that solve real business problems. From exploratory analysis to production-ready ML systems, I turn raw data into actionable insights using Python, SQL, and modern ML frameworks.",
         icon: "Code2",
         category: "main",
         order: 0,
       },
       {
-        title: "UI/UX Design",
-        description: "Creating beautiful interfaces",
-        icon: "Palette",
+        title: "Generative AI & LLMs",
+        description: "Building AI agents, RAG systems, and LLM-powered applications",
+        icon: "Sparkles",
         category: "skill",
         order: 1,
       },
       {
-        title: "Performance",
-        description: "Optimizing for speed",
+        title: "ML Model Development",
+        description: "Feature engineering, model training, and evaluation",
         icon: "Zap",
         category: "skill",
         order: 2,
+      },
+      {
+        title: "End-to-End Deployment",
+        description: "From Jupyter notebooks to production APIs",
+        icon: "Rocket",
+        category: "skill",
+        order: 3,
+      },
+      {
+        title: "Full-Stack for AI",
+        description: "React, Node.js, and cloud services to deploy ML products",
+        icon: "Globe",
+        category: "skill",
+        order: 4,
+      },
+      {
+        title: "Data Engineering",
+        description: "ETL pipelines and data infrastructure",
+        icon: "Layers",
+        category: "skill",
+        order: 5,
       },
     ];
 
