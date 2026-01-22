@@ -65,13 +65,15 @@ export const BentoGrid = () => {
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-8">
-                    {[
-                      "React",
-                      "TypeScript",
-                      "Node.js",
-                      "PostgreSQL",
-                      "Tailwind",
-                    ].map((tech) => (
+                    {(
+                      item.technologies || [
+                        "Python",
+                        "SQL",
+                        "Pandas",
+                        "Scikit-learn",
+                        "Streamlit",
+                      ]
+                    ).map((tech) => (
                       <span
                         key={tech}
                         className="px-3 py-1 text-sm glass rounded-lg text-muted-foreground"

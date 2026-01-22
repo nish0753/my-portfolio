@@ -38,6 +38,7 @@ export default function BentoGridManager() {
     description: "",
     icon: "Code2",
     category: "skill",
+    technologies: "",
   });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState<Partial<BentoItem>>({});
@@ -54,10 +55,12 @@ export default function BentoGridManager() {
         icon: "Code2",
         category: "main",
         order: 0,
+        technologies: ["Python", "SQL", "Pandas", "Scikit-learn", "Streamlit"],
       },
       {
         title: "Generative AI & LLMs",
-        description: "Building AI agents, RAG systems, and LLM-powered applications",
+        description:
+          "Building AI agents, RAG systems, and LLM-powered applications",
         icon: "Sparkles",
         category: "skill",
         order: 1,
@@ -110,18 +113,27 @@ export default function BentoGridManager() {
     }
 
     try {
+      const techArray = newItem.technologies
+        ? newItem.technologies
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean)
+        : [];
+
       await addDoc(collection(db, "bentoGrid"), {
         title: newItem.title,
         description: newItem.description,
         icon: newItem.icon,
         category: newItem.category,
         order: items.length,
+        technologies: techArray,
       });
       setNewItem({
         title: "",
         description: "",
         icon: "Code2",
         category: "skill",
+        technologies: "",
       });
       alert("Bento item added successfully!");
     } catch (error) {
@@ -150,6 +162,7 @@ export default function BentoGridManager() {
       description: item.description,
       icon: item.icon,
       category: item.category,
+      technologies: item.technologies || [],
     });
   };
 
@@ -218,6 +231,18 @@ export default function BentoGridManager() {
               </option>
             ))}
           </select>
+        </div>
+        <div className="mb-4">
+          <Input
+            placeholder="Technologies (comma-separated, e.g. Python, SQL, Pandas) - for main items"
+            value={newItem.technologies}
+            onChange={(e) =>
+              setNewItem({ ...newItem, technologies: e.target.value })
+            }
+          />
+          <p className="text-xs text-gray-400 mt-1">
+            Only shown for 'main' category items
+          </p>
         </div>
         <Button onClick={handleAdd} className="w-full">
           <Plus className="mr-2" size={18} />
@@ -288,6 +313,22 @@ export default function BentoGridManager() {
                           ))}
                         </select>
                       </div>
+                      {editData.category === "main" && (
+                        <Input
+                          value={(editData.technologies || []).join(", ")}
+                          onChange={(e) =>
+                            setEditData({
+                              ...editData,
+                              technologies: e.target.value
+                                .split(",")
+                                .map((t) => t.trim())
+                                .filter(Boolean),
+                            })
+                          }
+                          placeholder="Technologies (comma-separated)"
+                          className="mt-2"
+                        />
+                      )}
                     </div>
                     <Button onClick={handleSaveEdit} size="sm">
                       <Save size={16} />
@@ -313,6 +354,18 @@ export default function BentoGridManager() {
                       <p className="text-xs text-gray-500 mt-1">
                         Category: {item.category} | Icon: {item.icon}
                       </p>
+                      {item.technologies && item.technologies.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {item.technologies.map((tech) => (
+                            <span
+                              key={tech}
+                              className="px-2 py-0.5 text-xs bg-purple-500/20 text-purple-300 rounded"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <Button
                       onClick={() => handleEdit(item)}

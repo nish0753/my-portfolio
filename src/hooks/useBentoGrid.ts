@@ -9,6 +9,7 @@ export interface BentoItem {
   icon: string;
   category: "main" | "skill" | "stat";
   order: number;
+  technologies?: string[]; // For main items - editable tech tags
 }
 
 const DEFAULT_BENTO_ITEMS: BentoItem[] = [
@@ -20,11 +21,13 @@ const DEFAULT_BENTO_ITEMS: BentoItem[] = [
     icon: "Code2",
     category: "main",
     order: 0,
+    technologies: ["Python", "SQL", "Pandas", "Scikit-learn", "Streamlit"],
   },
   {
     id: "2",
     title: "Generative AI & LLMs",
-    description: "Building AI agents, RAG systems, and LLM-powered applications",
+    description:
+      "Building AI agents, RAG systems, and LLM-powered applications",
     icon: "Sparkles",
     category: "skill",
     order: 1,
