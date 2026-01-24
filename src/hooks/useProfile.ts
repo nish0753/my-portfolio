@@ -4,12 +4,12 @@ import { db } from "../lib/firebase";
 import type { ProfileData } from "../components/admin/ProfileSettings";
 
 const DEFAULT_PROFILE: ProfileData = {
-  name: "Your Name",
-  title: "Creative Developer & Designer",
-  bio: "I craft digital experiences that blend elegant design with powerful technology. Specializing in React, TypeScript, and modern web architecture.",
-  email: "hello@example.com",
-  linkedin: "https://linkedin.com/in/yourprofile",
-  github: "https://github.com/yourusername",
+  name: "Nishant Srivastava",
+  title: "Data Scientist & ML Engineer",
+  bio: "I build predictive models, ML pipelines, and GenAI applications that solve real-world problems. Specializing in Python, Machine Learning, and LLM-powered solutions.",
+  email: "nishant0753@gmail.com",
+  linkedin: "https://linkedin.com/in/nishant-srivastava",
+  github: "https://github.com/nish0753",
   availableForWork: true,
 };
 
