@@ -26,6 +26,11 @@ let db: Firestore | undefined;
 let storage: FirebaseStorage | undefined;
 let googleProvider: GoogleAuthProvider | undefined;
 
+const isDemoFirebase =
+  !import.meta.env.VITE_FIREBASE_API_KEY ||
+  firebaseConfig.apiKey === "demo-api-key" ||
+  firebaseConfig.projectId === "demo-project";
+
 try {
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
@@ -36,5 +41,5 @@ try {
   console.warn("Firebase initialization failed. Using demo mode.", error);
 }
 
-export { auth, db, storage, googleProvider };
+export { auth, db, storage, googleProvider, isDemoFirebase };
 export default app;
