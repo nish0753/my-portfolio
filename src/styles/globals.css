@@ -71,12 +71,26 @@
 
   /* Dark mode body background */
   .dark body {
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+    background:
+      radial-gradient(
+        circle at 20% 20%,
+        rgba(255, 255, 255, 0.03),
+        transparent 22%
+      ),
+      radial-gradient(
+        circle at 80% 10%,
+        rgba(255, 255, 255, 0.025),
+        transparent 20%
+      ),
+      #0b0f14;
   }
 
   /* Light mode body background */
   .light body {
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f8fafc 100%);
+    background:
+      radial-gradient(circle at 20% 20%, rgba(0, 0, 0, 0.03), transparent 22%),
+      radial-gradient(circle at 80% 10%, rgba(0, 0, 0, 0.02), transparent 20%),
+      #f6f7fb;
   }
 
   html {

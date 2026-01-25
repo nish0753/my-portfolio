@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme";
@@ -13,7 +13,7 @@ const navItems = [
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  useTheme();
 
   const handleNavClick = (path: string) => {
     if (path.startsWith("#")) {
@@ -56,34 +56,10 @@ export default function Navbar() {
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-500 group-hover:w-full transition-all duration-300" />
                 </a>
               ))}
-
-              {/* Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-xl glass-effect hover:bg-white/10 dark:hover:bg-white/10 transition-all duration-300"
-                aria-label="Toggle theme"
-              >
-                {theme === "dark" ? (
-                  <Sun size={20} className="text-yellow-400" />
-                ) : (
-                  <Moon size={20} className="text-purple-500" />
-                )}
-              </button>
             </div>
 
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center gap-2">
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-xl glass-effect hover:bg-white/10 transition-all duration-300"
-                aria-label="Toggle theme"
-              >
-                {theme === "dark" ? (
-                  <Sun size={20} className="text-yellow-400" />
-                ) : (
-                  <Moon size={20} className="text-purple-500" />
-                )}
-              </button>
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="p-2 rounded-lg glass-effect hover:bg-white/10 transition-colors"

@@ -48,7 +48,7 @@ export default function Hero() {
             className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight"
           >
             <span className="block text-white">Hi, I'm </span>
-            <span className="block bg-gradient-to-r from-purple-400 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-white via-sky-100 to-sky-200 bg-clip-text text-transparent drop-shadow-[0_6px_18px_rgba(125,211,252,0.08)]">
               {profile.name}
             </span>
           </motion.h1>
@@ -79,6 +79,10 @@ export default function Hero() {
           >
             {/* Main buttons row */}
             <div className="flex gap-4 justify-center flex-wrap items-center">
+              <Button size="lg" onClick={scrollToProjects} className="group">
+                Show My Work
+                <ArrowDown className="inline-block ml-2" size={18} />
+              </Button>
               {resume?.url && (
                 <Button
                   size="lg"
@@ -90,19 +94,11 @@ export default function Hero() {
                   View Resume
                 </Button>
               )}
-              <Button
-                size="lg"
-                onClick={scrollToProjects}
-                className="group bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 font-bold"
-              >
-                Show My Work
-                <ArrowDown className="inline-block ml-2" size={18} />
-              </Button>
               {profile.github && (
                 <Button
                   size="lg"
                   onClick={() => window.open(profile.github, "_blank")}
-                  variant="secondary"
+                  variant="ghost"
                   className="group"
                 >
                   <Github className="inline-block mr-2" size={20} />

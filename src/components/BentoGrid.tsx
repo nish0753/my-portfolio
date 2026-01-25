@@ -29,7 +29,9 @@ export const BentoGrid = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-            <span className="text-gradient">What I Do</span>
+            <span className="bg-gradient-to-r from-white via-sky-100 to-sky-200 bg-clip-text text-transparent">
+              What I Do
+            </span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
             Crafting digital experiences with modern technologies and creative
@@ -51,8 +53,9 @@ export const BentoGrid = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.1 }}
-                  className="bento-item md:col-span-2 lg:col-span-2 row-span-2 flex flex-col justify-between min-h-[400px]"
+                  className="bento-item relative overflow-hidden group md:col-span-2 lg:col-span-2 row-span-2 flex flex-col justify-between min-h-[400px]"
                 >
+                  <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-70 transition duration-300 bg-[radial-gradient(circle_at_30%_20%,rgba(125,211,252,0.05),transparent_35%),radial-gradient(circle_at_80%_10%,rgba(56,189,248,0.04),transparent_30%)]" />
                   <div>
                     <div className="w-14 h-14 glass rounded-2xl flex items-center justify-center mb-6">
                       <IconComponent className="w-7 h-7 text-foreground" />
@@ -123,8 +126,9 @@ export const BentoGrid = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
-                  className="bento-item flex flex-col"
+                  className="bento-item relative overflow-hidden group flex flex-col"
                 >
+                  <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-70 transition duration-300 bg-[radial-gradient(circle_at_25%_15%,rgba(125,211,252,0.05),transparent_32%),radial-gradient(circle_at_80%_15%,rgba(56,189,248,0.04),transparent_28%)]" />
                   <div className="w-12 h-12 glass rounded-xl flex items-center justify-center mb-4">
                     <IconComponent className="w-6 h-6 text-foreground" />
                   </div>

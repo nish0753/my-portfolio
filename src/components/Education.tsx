@@ -16,11 +16,10 @@ export default function Education() {
   const { items } = useEducation();
   return (
     <section id="education" className="relative py-24 px-6 overflow-hidden">
-      {/* Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 via-transparent to-purple-500/5" />
-
-      <div className="absolute top-20 right-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl" />
+      {/* Subtle background accents */}
+      <div className="absolute inset-0" />
+      <div className="absolute top-16 right-12 w-52 h-52 bg-white/3 dark:bg-white/4 rounded-full blur-3xl" />
+      <div className="absolute bottom-16 left-12 w-52 h-52 bg-white/2 dark:bg-white/3 rounded-full blur-3xl" />
 
       <div className="container relative z-10 px-6 max-w-5xl mx-auto">
         <motion.div
@@ -30,12 +29,10 @@ export default function Education() {
           transition={{ duration: 0.6 }}
           className="mb-16 text-center"
         >
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-purple-500" />
-            <span className="text-sm font-semibold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-              Education & Credentials
-            </span>
-            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-purple-500" />
+          <div className="flex items-center justify-center gap-3 mb-6 text-sm font-semibold uppercase tracking-widest text-gray-400">
+            <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
+            <span>Education & Credentials</span>
+            <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
           </div>
 
           <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
@@ -58,12 +55,11 @@ export default function Education() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 className="group"
               >
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur opacity-0 group-hover:opacity-20 transition duration-1000" />
-                <div className="relative bg-gradient-to-br from-white/[0.05] to-white/[0.02] backdrop-blur-xl border border-white/10 rounded-xl p-6 md:p-8 hover:border-white/20 transition-all duration-300">
+                <div className="relative bg-white/[0.03] dark:bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-xl p-6 md:p-8 hover:border-white/15 transition-all duration-300">
                   <div className="flex gap-6">
                     {/* Icon */}
                     <div className="flex-shrink-0">
-                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center group-hover:shadow-lg group-hover:shadow-blue-500/30 transition-all duration-300">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center shadow-inner shadow-black/20">
                         <Icon size={28} className="text-white" />
                       </div>
                     </div>
@@ -74,7 +70,7 @@ export default function Education() {
                         <h3 className="text-xl md:text-2xl font-bold text-white">
                           {edu.degree}
                         </h3>
-                        <span className="text-sm font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mt-2 md:mt-0">
+                        <span className="text-sm font-semibold text-gray-300 mt-2 md:mt-0">
                           {edu.year}
                         </span>
                       </div>
@@ -95,7 +91,7 @@ export default function Education() {
                             href={edu.certificateUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 hover:border-blue-500/60 text-blue-300 hover:text-blue-200 transition-all duration-300"
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/15 text-gray-200 hover:border-white/30 hover:bg-white/5 transition-all duration-200"
                           >
                             <FileText size={18} />
                             View Certificate

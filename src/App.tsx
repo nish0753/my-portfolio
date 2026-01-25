@@ -25,7 +25,8 @@ function App() {
       <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white transition-colors duration-300">
         {isDemoFirebase && (
           <div className="bg-amber-500/90 text-black text-sm px-4 py-2 text-center font-semibold">
-            Warning: Firebase env vars are missing in this build. Data edits may not persist for other users.
+            Warning: Firebase env vars are missing in this build. Data edits may
+            not persist for other users.
           </div>
         )}
         <Navbar />
