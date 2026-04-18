@@ -15,6 +15,7 @@ import ResumeUpload from "../components/admin/ResumeUpload";
 import ProfileSettings from "../components/admin/ProfileSettings";
 import SkillsManager from "../components/admin/SkillsManager";
 import BentoGridManager from "../components/admin/BentoGridManager";
+import ExperienceManager from "../components/admin/ExperienceManager";
 import EducationManager from "../components/admin/EducationManager";
 import Button from "../components/admin-ui/Button";
 import GlassCard from "../components/admin-ui/GlassCard";
@@ -205,6 +206,16 @@ export default function Admin() {
           className="mb-8"
         >
           <BentoGridManager />
+        </motion.div>
+
+        {/* Experience Management */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.24 }}
+          className="mb-8"
+        >
+          <ExperienceManager />
         </motion.div>
 
         {/* Education Management */}

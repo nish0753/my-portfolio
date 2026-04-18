@@ -4,6 +4,20 @@ import { ArrowDownCircle, ExternalLink, Mail, FileText, Code2 } from 'lucide-rea
 import { useProfile } from '@/hooks/useProfile';
 import { useResume } from '@/hooks/useResume';
 
+const renderBioWithHighlights = (bio: string) => {
+  if (!bio) return null;
+  const parts = bio.split(/(\*\*.*?\*\*)/g);
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <span key={index} className="text-[hsl(var(--primary))] font-semibold">
+          {part.slice(2, -2)}
+        </span>
+      );
+    }
+    return <span key={index}>{part}</span>;
+  });
+};
 const SkillPill = ({ skill }: { skill: string }) => {
   const [imgError, setImgError] = useState(false);
   
@@ -87,7 +101,7 @@ const HeroSection = () => {
             </h1>
             
             <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-6 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              {profile.bio}
+              {renderBioWithHighlights(profile.bio)}
             </p>
 
             {/* Tech Stack Icons */ }

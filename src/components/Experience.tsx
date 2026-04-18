@@ -1,24 +1,22 @@
 import { motion } from "framer-motion";
 import * as Icons from "lucide-react";
-import { FileText } from "lucide-react";
-import { useEducation } from "../hooks/useEducation";
+import { useExperience } from "../hooks/useExperience";
 
 const ICON_MAP: Record<string, any> = {
-  GraduationCap: Icons.GraduationCap,
-  BookOpen: Icons.BookOpen,
-  Award: Icons.Award,
   Briefcase: Icons.Briefcase,
   Star: Icons.Star,
+  Building: Icons.Building,
+  Monitor: Icons.Monitor,
+  Code: Icons.Code,
   Zap: Icons.Zap,
 };
 
-export default function Education() {
-  const { items } = useEducation();
+export default function Experience() {
+  const { items } = useExperience();
   return (
-    <section id="education" className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-slate-900/50 relative overflow-hidden">
+    <section id="experience" className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-slate-950 relative overflow-hidden">
       {/* Background accents */}
-      <div className="absolute top-16 right-12 w-52 h-52 bg-[hsl(var(--primary)/0.05)] rounded-full blur-3xl" />
-      <div className="absolute bottom-16 left-12 w-52 h-52 bg-[hsl(var(--primary)/0.03)] rounded-full blur-3xl" />
+      <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[hsl(var(--primary)/0.03)] via-transparent to-transparent pointer-events-none" />
 
       <div className="container relative z-10 max-w-5xl mx-auto">
         <motion.div
@@ -29,65 +27,47 @@ export default function Education() {
           className="text-center mb-12 sm:mb-16"
         >
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold text-slate-50 mb-4 sm:mb-5">
-            Education
+            Experience
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-slate-400 max-w-2xl mx-auto">
-            Continuous education and professional development
+            Professional journey and career highlights
           </p>
         </motion.div>
 
         <div className="relative border-l-2 border-[hsl(var(--primary)/0.2)] ml-4 md:ml-6 space-y-12 pb-8">
-          {items.map((edu, index) => {
-            const Icon = ICON_MAP[edu.icon] || Icons.GraduationCap;
+          {items.map((exp, index) => {
             return (
               <motion.div
-                key={edu.id}
+                key={exp.id}
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 className="relative pl-8 md:pl-12 group"
               >
-                {/* Glowing Node with User-selected Icon */}
-                <div className="absolute left-[-18px] top-0 w-9 h-9 rounded-full bg-slate-900 border-2 border-[hsl(var(--primary))] shadow-[0_0_10px_hsl(var(--primary)/0.5)] flex items-center justify-center group-hover:scale-110 group-hover:bg-[hsl(var(--primary))] group-hover:text-slate-900 text-[hsl(var(--primary))] transition-all duration-300 z-10">
-                  <Icon size={16} />
-                </div>
+                {/* Glowing Node */}
+                <div className="absolute left-[-9px] top-2 w-4 h-4 rounded-full bg-[hsl(var(--primary))] shadow-[0_0_15px_hsl(var(--primary))] ring-4 ring-slate-950 group-hover:scale-125 transition-transform duration-300" />
                 
                 {/* Content Card */}
                 <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800/60 p-6 md:p-8 rounded-2xl hover:bg-slate-800/50 hover:border-slate-700/80 transition-all duration-300 group-hover:-translate-y-1 shadow-lg shadow-black/20">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
                     <div>
                       <h3 className="text-xl md:text-2xl font-display font-bold text-slate-50 group-hover:text-[hsl(var(--primary))] transition-colors">
-                        {edu.degree}
+                        {exp.role}
                       </h3>
                       <p className="text-[hsl(var(--primary))] font-medium text-lg mt-1">
-                        {edu.school}
+                        {exp.company}
                       </p>
-                      <p className="text-sm text-slate-400 mt-1">{edu.field}</p>
                     </div>
                     
                     <span className="inline-block mt-3 md:mt-0 px-4 py-1.5 rounded-full bg-slate-800/80 text-sm font-semibold text-slate-300 border border-slate-700/50 self-start md:self-auto">
-                      {edu.year}
+                      {exp.year}
                     </span>
                   </div>
 
                   <p className="text-slate-300 leading-relaxed text-base pt-2 border-t border-slate-800/50">
-                    {edu.description}
+                    {exp.description}
                   </p>
-                  
-                  {edu.certificateUrl && (
-                    <div className="mt-5">
-                      <a
-                        href={edu.certificateUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-700/50 text-slate-300 hover:border-[hsl(var(--primary)/0.5)] hover:text-[hsl(var(--primary))] hover:bg-slate-800/50 transition-all duration-200 text-sm font-medium"
-                      >
-                        <FileText size={16} />
-                        View Certificate
-                      </a>
-                    </div>
-                  )}
                 </div>
               </motion.div>
             );
