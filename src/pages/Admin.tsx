@@ -16,8 +16,8 @@ import ProfileSettings from "../components/admin/ProfileSettings";
 import SkillsManager from "../components/admin/SkillsManager";
 import BentoGridManager from "../components/admin/BentoGridManager";
 import EducationManager from "../components/admin/EducationManager";
-import Button from "../components/ui/Button";
-import GlassCard from "../components/ui/GlassCard";
+import Button from "../components/admin-ui/Button";
+import GlassCard from "../components/admin-ui/GlassCard";
 
 export default function Admin() {
   const { user, loading: authLoading } = useAuth();

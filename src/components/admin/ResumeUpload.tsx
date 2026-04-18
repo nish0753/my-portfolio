@@ -8,9 +8,9 @@ import {
 } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import { storage, db } from "../../lib/firebase";
-import Button from "../ui/Button";
-import GlassCard from "../ui/GlassCard";
-import Input from "../ui/Input";
+import Button from "../admin-ui/Button";
+import GlassCard from "../admin-ui/GlassCard";
+import Input from "../admin-ui/Input";
 
 interface ResumeUploadProps {
   currentResumeUrl?: string;

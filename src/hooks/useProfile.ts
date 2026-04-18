@@ -4,13 +4,14 @@ import { db } from "../lib/firebase";
 import type { ProfileData } from "../components/admin/ProfileSettings";
 
 const DEFAULT_PROFILE: ProfileData = {
-  name: "Your Name",
-  title: "Your Title",
-  bio: "Short bio about you.",
-  email: "you@example.com",
-  linkedin: "https://linkedin.com/in/yourprofile",
-  github: "https://github.com/yourusername",
+  name: "Nishant",
+  title: "Data Scientist & ML Engineer",
+  bio: "I build data-driven solutions using Machine Learning, analytics, and modern AI techniques to solve real-world problems. Specializing in Python, RAG, and LLM-powered applications.",
+  email: "",
+  linkedin: "",
+  github: "",
   availableForWork: true,
+  heroSkills: ["Python", "PyTorch", "Scikit-Learn", "LangChain"],
 };
 
 export function useProfile() {

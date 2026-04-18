@@ -56,7 +56,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
             {project.technologies.map((tech, i) => (
               <span
                 key={i}
-                className="px-3 py-1 text-sm rounded-full glass-effect text-gray-300"
+                className="px-3 py-1 text-sm rounded-full bg-slate-800/50 border border-slate-700/50 text-gray-300"
               >
                 {tech}
               </span>
@@ -70,7 +70,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg glass-effect hover:bg-white/10 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:bg-white/10 transition-colors"
               >
                 <ExternalLink size={16} />
                 <span className="text-sm">Live Demo</span>
@@ -81,7 +81,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg glass-effect hover:bg-white/10 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:bg-white/10 transition-colors"
               >
                 <Github size={16} />
                 <span className="text-sm">Code</span>

@@ -5,8 +5,8 @@ import { auth, googleProvider } from "../lib/firebase";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { isAuthorizedAdmin } from "../lib/auth";
-import Button from "../components/ui/Button";
-import GlassCard from "../components/ui/GlassCard";
+import Button from "../components/admin-ui/Button";
+import GlassCard from "../components/admin-ui/GlassCard";
 import { LogIn, Loader, ShieldAlert } from "lucide-react";
 
 export default function Login() {

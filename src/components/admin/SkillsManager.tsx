@@ -9,9 +9,9 @@ import {
 } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { useSkills, type Skill } from "../../hooks/useSkills";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import GlassCard from "../ui/GlassCard";
+import Button from "../admin-ui/Button";
+import Input from "../admin-ui/Input";
+import GlassCard from "../admin-ui/GlassCard";
 
 export default function SkillsManager() {
   const { skills } = useSkills();

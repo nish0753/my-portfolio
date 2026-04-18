@@ -1,44 +1,34 @@
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect } from "react";
-import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
+import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
-import EditorGuide from "./pages/EditorGuide";
-import { isDemoFirebase } from "./lib/firebase";
+import NotFound from "./pages/NotFound";
+import { ThemeProvider } from "@/hooks/useTheme";
 
-function App() {
-  // Initialize theme on load
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("portfolio-theme");
-    if (savedTheme === "light") {
-      document.documentElement.classList.add("light");
-      document.documentElement.classList.remove("dark");
-    } else {
-      document.documentElement.classList.add("dark");
-      document.documentElement.classList.remove("light");
-    }
-  }, []);
+const queryClient = new QueryClient();
 
-  return (
-    <BrowserRouter>
-      <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white transition-colors duration-300">
-        {isDemoFirebase && (
-          <div className="bg-amber-500/90 text-black text-sm px-4 py-2 text-center font-semibold">
-            Warning: Firebase env vars are missing in this build. Data edits may
-            not persist for other users.
-          </div>
-        )}
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/guide" element={<EditorGuide />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
-  );
-}
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/login" element={<Login />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
+  </QueryClientProvider>
+);
 
 export default App;

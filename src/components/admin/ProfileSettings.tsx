@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { User, Save, Loader } from "lucide-react";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import Textarea from "../ui/Textarea";
-import GlassCard from "../ui/GlassCard";
+import Button from "../admin-ui/Button";
+import Input from "../admin-ui/Input";
+import Textarea from "../admin-ui/Textarea";
+import GlassCard from "../admin-ui/GlassCard";
 
 export interface ProfileData {
   name: string;
@@ -15,6 +15,8 @@ export interface ProfileData {
   linkedin: string;
   github: string;
   availableForWork: boolean;
+  heroSkills?: string[];
+  heroSkillsText?: string;
 }
 
 export default function ProfileSettings() {
@@ -28,6 +30,8 @@ export default function ProfileSettings() {
     linkedin: "https://linkedin.com/in/yourprofile",
     github: "https://github.com/yourusername",
     availableForWork: true,
+    heroSkills: ["Python", "PyTorch", "Scikit-Learn", "LangChain"],
+    heroSkillsText: "Python, PyTorch, Scikit-Learn, LangChain",
   });
 
   useEffect(() => {
@@ -42,7 +46,11 @@ export default function ProfileSettings() {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        setFormData(docSnap.data() as ProfileData);
+        const data = docSnap.data() as ProfileData;
+        setFormData({
+          ...data,
+          heroSkillsText: (data.heroSkills || []).join(", ")
+        });
       }
     } catch (error) {
       console.error("Error loading profile:", error);
@@ -62,8 +70,14 @@ export default function ProfileSettings() {
 
     setSaving(true);
     try {
+      const finalData = { ...formData };
+      if (finalData.heroSkillsText !== undefined) {
+        finalData.heroSkills = finalData.heroSkillsText.split(",").map(s => s.trim()).filter(Boolean);
+        delete finalData.heroSkillsText;
+      }
+      
       await setDoc(doc(db, "settings", "profile"), {
-        ...formData,
+        ...finalData,
         updatedAt: new Date().toISOString(),
       });
       alert("Profile updated successfully!");
@@ -95,14 +109,6 @@ export default function ProfileSettings() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
-            label="Your Name"
-            required
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            placeholder="John Doe"
-          />
-
-          <Input
             label="Title / Role"
             required
             value={formData.title}
@@ -117,8 +123,19 @@ export default function ProfileSettings() {
             required
             value={formData.bio}
             onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-            placeholder="Tell visitors about yourself..."
             rows={4}
+          />
+          
+          <Input
+            label="Top Skills (comma separated, e.g., Python, Git, React)"
+            value={formData.heroSkillsText !== undefined ? formData.heroSkillsText : (formData.heroSkills || []).join(", ")}
+            onChange={(e) =>
+              setFormData({ 
+                ...formData, 
+                heroSkillsText: e.target.value
+              })
+            }
+            placeholder="Python, PyTorch, React, Node.js"
           />
 
           <Input
@@ -157,7 +174,7 @@ export default function ProfileSettings() {
               onChange={(e) =>
                 setFormData({ ...formData, availableForWork: e.target.checked })
               }
-              className="w-5 h-5 rounded glass-effect"
+              className="w-5 h-5 rounded bg-slate-800/50 border border-slate-700/50"
             />
             <span className="text-gray-300">
               Available for work (shows badge on homepage)

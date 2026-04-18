@@ -10,10 +10,10 @@ import {
 } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import type { Project } from "../ProjectCard";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import Textarea from "../ui/Textarea";
-import GlassCard from "../ui/GlassCard";
+import Button from "../admin-ui/Button";
+import Input from "../admin-ui/Input";
+import Textarea from "../admin-ui/Textarea";
+import GlassCard from "../admin-ui/GlassCard";
 
 const SAMPLE_PROJECTS = [
   {
@@ -306,7 +306,7 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
                     onChange={(e) =>
                       setFormData({ ...formData, featured: e.target.checked })
                     }
-                    className="w-5 h-5 rounded glass-effect"
+                    className="w-5 h-5 rounded bg-slate-800/50 border border-slate-700/50"
                   />
                   <span className="text-gray-300">Featured Project</span>
                 </label>
@@ -349,7 +349,7 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
                 {project.technologies.slice(0, 3).map((tech, i) => (
                   <span
                     key={i}
-                    className="text-xs px-2 py-1 rounded glass-effect"
+                    className="text-xs px-2 py-1 rounded bg-slate-800/50 border border-slate-700/50"
                   >
                     {tech}
                   </span>
@@ -359,13 +359,13 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
             <div className="flex gap-2">
               <button
                 onClick={() => handleEdit(project)}
-                className="p-2 rounded-lg glass-effect hover:bg-white/10 transition-colors"
+                className="p-2 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:bg-white/10 transition-colors"
               >
                 <Edit size={20} />
               </button>
               <button
                 onClick={() => handleDelete(project.id)}
-                className="p-2 rounded-lg glass-effect hover:bg-red-500/20 transition-colors text-red-400"
+                className="p-2 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:bg-red-500/20 transition-colors text-red-400"
               >
                 <Trash2 size={20} />
               </button>

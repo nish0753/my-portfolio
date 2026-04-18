@@ -9,10 +9,10 @@ import {
 } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { useEducation, type EducationItem } from "../../hooks/useEducation";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import Textarea from "../ui/Textarea";
-import GlassCard from "../ui/GlassCard";
+import Button from "../admin-ui/Button";
+import Input from "../admin-ui/Input";
+import Textarea from "../admin-ui/Textarea";
+import GlassCard from "../admin-ui/GlassCard";
 
 const ICON_OPTIONS = [
   "GraduationCap",
