@@ -1,4 +1,4 @@
-# Nishant - Machine Learning Engineer Portfolio
+# Nishant-Portfolio
 
 A modern, responsive, and dynamic portfolio built to showcase data science and machine learning expertise. This platform features a custom Firebase-powered Content Management System (CMS), allowing seamless resume updates, project dynamic additions, and live tech-stack modifications without modifying codebase.
 
