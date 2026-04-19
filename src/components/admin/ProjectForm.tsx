@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, Edit, Trash2, X, Sparkles } from "lucide-react";
+import { Plus, Edit, Trash2, X, Sparkles, ChevronUp, ChevronDown } from "lucide-react";
 import {
   collection,
   addDoc,
@@ -100,6 +100,7 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
         await addDoc(collection(db, "projects"), {
           ...projectData,
           createdAt: new Date().toISOString(),
+          order: projects.length,
         });
       }
 
@@ -184,6 +185,34 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
       alert("Failed to add sample projects. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleMoveUp = async (index: number) => {
+    if (index === 0 || !db) return;
+    try {
+      const current = projects[index];
+      const above = projects[index - 1];
+      const currentOrder = (current as any).order ?? index;
+      const aboveOrder = (above as any).order ?? index - 1;
+      await updateDoc(doc(db, "projects", current.id), { order: aboveOrder });
+      await updateDoc(doc(db, "projects", above.id), { order: currentOrder });
+    } catch (error) {
+      console.error("Error reordering:", error);
+    }
+  };
+
+  const handleMoveDown = async (index: number) => {
+    if (index >= projects.length - 1 || !db) return;
+    try {
+      const current = projects[index];
+      const below = projects[index + 1];
+      const currentOrder = (current as any).order ?? index;
+      const belowOrder = (below as any).order ?? index + 1;
+      await updateDoc(doc(db, "projects", current.id), { order: belowOrder });
+      await updateDoc(doc(db, "projects", below.id), { order: currentOrder });
+    } catch (error) {
+      console.error("Error reordering:", error);
     }
   };
 
@@ -335,11 +364,15 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
 
       {/* Projects List */}
       <div className="grid gap-4">
-        {projects.map((project) => (
+        {projects.map((project, index) => (
           <GlassCard
             key={project.id}
             className="flex items-center justify-between"
           >
+            {/* Position Number */}
+            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-slate-800/80 border border-slate-700/50 flex items-center justify-center text-lg font-bold text-[hsl(var(--primary))] mr-4">
+              {index + 1}
+            </div>
             <div className="flex-1">
               <h3 className="text-xl font-bold mb-1">{project.title}</h3>
               <p className="text-gray-400 text-sm line-clamp-2">
@@ -355,6 +388,24 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
                   </span>
                 ))}
               </div>
+            </div>
+            <div className="flex flex-col gap-1 mr-3">
+              <button
+                onClick={() => handleMoveUp(index)}
+                disabled={index === 0}
+                className="p-1.5 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                title="Move Up"
+              >
+                <ChevronUp size={16} />
+              </button>
+              <button
+                onClick={() => handleMoveDown(index)}
+                disabled={index === projects.length - 1}
+                className="p-1.5 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                title="Move Down"
+              >
+                <ChevronDown size={16} />
+              </button>
             </div>
             <div className="flex gap-2">
               <button

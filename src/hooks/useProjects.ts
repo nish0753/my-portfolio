@@ -19,7 +19,7 @@ export function useProjects() {
 
     try {
       // Create a query with real-time listener
-      const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
+      const q = query(collection(db, "projects"), orderBy("order", "asc"));
 
       // Set up real-time listener (onSnapshot)
       const unsubscribe = onSnapshot(
