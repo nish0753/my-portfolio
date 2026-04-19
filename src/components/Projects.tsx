@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Github, ArrowRight } from 'lucide-react';
+import { ExternalLink, Github, ArrowRight, Loader } from 'lucide-react';
+import { useProjects } from '@/hooks/useProjects';
 
 interface ProjectProps {
   title: string;
@@ -211,36 +212,17 @@ const ProjectShowcaseDesktop = ({ title, description, imageUrl, tags, link, gith
 };
 
 const Projects = () => {
-  const projects = [
-    {
-      title: "Automated Bill Extraction System",
-      description: "A high-precision AI-powered system that extracts structured line-item data from complex medical bills using a hybrid pipeline combining Google Gemini 2.0 Flash (visual understanding) and Tesseract OCR (textual precision). Features self-healing JSON parsing, smart PDF batching, and production-ready Docker deployment with FastAPI.",
-      imageUrl: "https://www.xevensolutions.com/blog/future-of-medical-billing-with-ai/",
-      tags: [
-        "Python",
-        "FastAPI",
-        "Google Gemini 2.0",
-        "Tesseract OCR",
-        "Docker"
-      ],
-      link: "https://nishant-nit-patna.onrender.com/",
-      githubLink: "https://github.com/nish0753/Nishant_NIT_PATNA"
-    },
-    {
-      title: "Student Performance Predictor",
-      description: "An end-to-end ML pipeline predicting student exam performance using demographic and socioeconomic factors. Includes automated data processing, model training with hyperparameter tuning, and a Flask web app for real-time predictions.",
-      imageUrl: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1920&q=80",
-      tags: [
-        "Python",
-        "scikit-learn",
-        "Pandas",
-        "NumPy",
-        "Flask"
-      ],
-      link: "https://example.com",
-      githubLink: "https://github.com/nish0753/mlproject"
-    }
-  ];
+  const { projects: firebaseProjects, loading } = useProjects();
+
+  // Map Firebase data shape to the component's expected shape
+  const projects = firebaseProjects.map(p => ({
+    title: p.title,
+    description: p.description,
+    imageUrl: p.imageUrl || '',
+    tags: p.technologies || [],
+    link: p.liveUrl || '',
+    githubLink: p.githubUrl || '',
+  }));
 
   return (
     <section id="projects" className="py-16 sm:py-20 md:py-24 lg:py-28 px-0 sm:px-4 md:px-6 lg:px-8 bg-slate-950">
