@@ -18,8 +18,8 @@ export function useProjects() {
     }
 
     try {
-      // Create a query with real-time listener
-      const q = query(collection(db, "projects"), orderBy("order", "asc"));
+      // Fetch all projects (no orderBy to avoid excluding docs without 'order' field)
+      const q = query(collection(db, "projects"));
 
       // Set up real-time listener (onSnapshot)
       const unsubscribe = onSnapshot(
@@ -31,6 +31,12 @@ export function useProjects() {
               id: doc.id,
               ...doc.data(),
             } as Project);
+          });
+          // Sort client-side: by 'order' field if present, otherwise by createdAt
+          projectsData.sort((a, b) => {
+            const orderA = (a as any).order ?? 9999;
+            const orderB = (b as any).order ?? 9999;
+            return orderA - orderB;
           });
           setProjects(projectsData);
           setLoading(false);
