@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from "react";
+import { useState, useEffect, type ChangeEvent } from "react";
 import { Upload, FileText, X, Download, Eye, Link } from "lucide-react";
 import {
   ref,
@@ -23,6 +23,13 @@ export default function ResumeUpload({ currentResumeUrl }: ResumeUploadProps) {
   const [previewUrl, setPreviewUrl] = useState(currentResumeUrl || "");
   const [urlInput, setUrlInput] = useState("");
   const [showUrlInput, setShowUrlInput] = useState(false);
+  const [showChangeUrl, setShowChangeUrl] = useState(false);
+
+  // Sync local state when the prop changes (e.g. after Firestore real-time update)
+  useEffect(() => {
+    setResumeUrl(currentResumeUrl || "");
+    setPreviewUrl(currentResumeUrl || "");
+  }, [currentResumeUrl]);
 
   const handleUrlSubmit = async () => {
     if (!urlInput.trim()) {
@@ -46,6 +53,7 @@ export default function ResumeUpload({ currentResumeUrl }: ResumeUploadProps) {
       setPreviewUrl(urlInput);
       setUrlInput("");
       setShowUrlInput(false);
+      setShowChangeUrl(false);
       alert("Resume URL saved successfully!");
     } catch (error: any) {
       console.error("Error saving resume URL:", error);
@@ -119,6 +127,7 @@ export default function ResumeUpload({ currentResumeUrl }: ResumeUploadProps) {
           setPreviewUrl(downloadUrl);
           setUploading(false);
           setUploadProgress(0);
+          setShowChangeUrl(false);
           alert("Resume uploaded successfully!");
         },
       );
@@ -136,19 +145,27 @@ export default function ResumeUpload({ currentResumeUrl }: ResumeUploadProps) {
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete the resume?")) return;
 
-    if (!storage || !db) {
+    if (!db) {
       alert("Firebase is not configured.");
       return;
     }
 
     try {
-      // Delete from storage
-      if (resumeUrl) {
-        const fileRef = ref(storage, resumeUrl);
-        await deleteObject(fileRef);
+      // Only attempt storage deletion for Firebase Storage URLs
+      if (resumeUrl && storage && resumeUrl.includes("firebasestorage.app")) {
+        try {
+          const fileRef = ref(storage, resumeUrl);
+          await deleteObject(fileRef);
+        } catch (storageError: any) {
+          // Non-fatal: log but continue clearing Firestore record
+          console.warn(
+            "Could not delete from storage (may be an external URL):",
+            storageError?.message,
+          );
+        }
       }
 
-      // Delete from Firestore
+      // Always clear from Firestore
       await setDoc(doc(db, "settings", "resume"), {
         url: null,
         updatedAt: new Date().toISOString(),
@@ -156,6 +173,7 @@ export default function ResumeUpload({ currentResumeUrl }: ResumeUploadProps) {
 
       setResumeUrl("");
       setPreviewUrl("");
+      setShowChangeUrl(false);
       alert("Resume deleted successfully!");
     } catch (error) {
       console.error("Error deleting resume:", error);
@@ -173,7 +191,7 @@ export default function ResumeUpload({ currentResumeUrl }: ResumeUploadProps) {
           </h2>
         </div>
 
-        {/* Upload Section */}
+        {/* Upload Section — shown when no resume is set yet */}
         {!resumeUrl && !uploading && (
           <>
             <div className="border-2 border-dashed border-glass-border rounded-xl p-8 text-center hover:border-purple-400 transition-colors">
@@ -256,7 +274,7 @@ export default function ResumeUpload({ currentResumeUrl }: ResumeUploadProps) {
           </div>
         )}
 
-        {/* Resume Preview */}
+        {/* Resume Preview — shown when a resume URL exists */}
         {resumeUrl && !uploading && (
           <div className="space-y-4">
             <div className="border border-glass-border rounded-xl p-6 space-y-4">
@@ -302,31 +320,95 @@ export default function ResumeUpload({ currentResumeUrl }: ResumeUploadProps) {
                   Download
                 </Button>
               </div>
+
+              {/* Update options */}
+              <div className="pt-2 border-t border-glass-border space-y-3">
+                <p className="text-sm text-gray-400 font-medium">
+                  Update Resume
+                </p>
+                <div className="flex gap-2 flex-wrap">
+                  {/* Upload new PDF */}
+                  <label className="cursor-pointer flex-1">
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+                    <Button variant="secondary" className="w-full pointer-events-none">
+                      <Upload className="mr-2" size={18} />
+                      Upload New PDF
+                    </Button>
+                  </label>
+
+                  {/* Change URL */}
+                  <Button
+                    variant="secondary"
+                    className="flex-1"
+                    onClick={() => setShowChangeUrl((v) => !v)}
+                  >
+                    <Link className="mr-2" size={18} />
+                    Change URL
+                  </Button>
+                </div>
+
+                {showChangeUrl && (
+                  <div className="space-y-3">
+                    <Input
+                      type="url"
+                      placeholder="Enter new resume URL (Google Drive, Dropbox, etc.)"
+                      value={urlInput}
+                      onChange={(e) => setUrlInput(e.target.value)}
+                    />
+                    <div className="flex gap-2">
+                      <Button onClick={handleUrlSubmit} className="flex-1">
+                        Save New URL
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setShowChangeUrl(false);
+                          setUrlInput("");
+                        }}
+                        variant="ghost"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      Tip: Upload to Google Drive, set to "Anyone with link can
+                      view", then paste the link here
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* PDF Preview iframe */}
-            <div className="border border-glass-border rounded-xl overflow-hidden">
-              <iframe
-                src={`${previewUrl}#toolbar=0`}
-                className="w-full h-[600px]"
-                title="Resume Preview"
-              />
-            </div>
-
-            <div className="text-center">
-              <label className="cursor-pointer">
-                <input
-                  type="file"
-                  accept=".pdf"
-                  onChange={handleFileSelect}
-                  className="hidden"
+            {/* PDF Preview iframe — only for Firebase Storage or direct PDF links */}
+            {previewUrl && !previewUrl.includes("drive.google.com") && (
+              <div className="border border-glass-border rounded-xl overflow-hidden">
+                <iframe
+                  src={`${previewUrl}#toolbar=0`}
+                  className="w-full h-[600px]"
+                  title="Resume Preview"
                 />
-                <Button variant="secondary">
-                  <Upload className="mr-2" size={18} />
-                  Upload New Resume
-                </Button>
-              </label>
-            </div>
+              </div>
+            )}
+
+            {/* Google Drive note */}
+            {previewUrl && previewUrl.includes("drive.google.com") && (
+              <div className="border border-glass-border rounded-xl p-4 text-center text-sm text-gray-400">
+                <p>
+                  Google Drive links can't be embedded directly.{" "}
+                  <button
+                    onClick={() => window.open(previewUrl, "_blank")}
+                    className="text-purple-400 underline hover:text-purple-300"
+                  >
+                    Open in new tab
+                  </button>{" "}
+                  to preview.
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>

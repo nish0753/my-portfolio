@@ -48,7 +48,7 @@ const Navbar = () => {
             onDoubleClick={toggleTheme}
             className="font-display text-xl sm:text-2xl font-bold text-slate-50 hover:text-[hsl(var(--primary))] transition-colors select-none"
           >
-            Nishant
+            Nishant Kumar
           </button>
           
           <div className="hidden md:flex items-center gap-8">

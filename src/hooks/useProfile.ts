@@ -4,7 +4,7 @@ import { db } from "../lib/firebase";
 import type { ProfileData } from "../components/admin/ProfileSettings";
 
 const DEFAULT_PROFILE: ProfileData = {
-  name: "Nishant",
+  name: "Nishant Kumar",
   title: "Data Scientist & ML Engineer",
   bio: "I build data-driven solutions using Machine Learning, analytics, and modern AI techniques to solve real-world problems. Specializing in Python, RAG, and LLM-powered applications.",
   email: "",

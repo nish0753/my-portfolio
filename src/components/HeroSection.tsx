@@ -97,7 +97,7 @@ const HeroSection = () => {
             </div>
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight mb-6 text-slate-50">
-              Hi, I'm <span className="text-[hsl(var(--primary))]">Nishant</span>
+              Hi, I'm <span className="text-[hsl(var(--primary))]">{profile.name}</span>
             </h1>
             
             <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-6 max-w-2xl mx-auto lg:mx-0 leading-relaxed">

@@ -9,8 +9,7 @@ const Footer = () => {
       <div className="container mx-auto max-w-6xl">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-center md:text-left">
-            <h3 className="font-display text-xl sm:text-2xl font-bold text-slate-50 mb-1 select-none">
-              Nishant
+              {profile.name}
             </h3>
             <p className="text-sm text-slate-500">
               {profile.title}
@@ -40,7 +39,7 @@ const Footer = () => {
         </div>
         
         <div className="mt-8 pt-6 border-t border-slate-800 text-center text-sm text-slate-600">
-          <p>© {new Date().getFullYear()} Nishant. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Nishant Kumar. All rights reserved.</p>
         </div>
       </div>
     </footer>
