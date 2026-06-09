@@ -9,6 +9,7 @@ const Footer = () => {
       <div className="container mx-auto max-w-6xl">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-center md:text-left">
+            <h3 className="font-display text-xl sm:text-2xl font-bold text-slate-50 mb-1 select-none">
               {profile.name}
             </h3>
             <p className="text-sm text-slate-500">
