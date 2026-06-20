@@ -17,6 +17,10 @@ export interface ProfileData {
   availableForWork: boolean;
   heroSkills?: string[];
   heroSkillsText?: string;
+  heroHeadline?: string;
+  portraitUrl?: string;
+  aboutHeadline?: string;
+  footerTagline?: string;
 }
 
 export default function ProfileSettings() {
@@ -32,6 +36,10 @@ export default function ProfileSettings() {
     availableForWork: true,
     heroSkills: ["Python", "PyTorch", "Scikit-Learn", "LangChain"],
     heroSkillsText: "Python, PyTorch, Scikit-Learn, LangChain",
+    heroHeadline: "Nishant builds calm, dependable software.",
+    portraitUrl: "/portrait_character.png",
+    aboutHeadline: "A builder across the whole stack.",
+    footerTagline: "Building calm, dependable software — open to roles and selective freelance work.",
   });
 
   useEffect(() => {
@@ -108,6 +116,54 @@ export default function ProfileSettings() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            label="Full Name"
+            required
+            value={formData.name}
+            onChange={(e) =>
+              setFormData({ ...formData, name: e.target.value })
+            }
+            placeholder="Ada Lovelace"
+          />
+
+          <Input
+            label="Hero Headline"
+            required
+            value={formData.heroHeadline || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, heroHeadline: e.target.value })
+            }
+            placeholder="Nishant builds calm, dependable software."
+          />
+
+          <Input
+            label="Portrait Image URL"
+            value={formData.portraitUrl || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, portraitUrl: e.target.value })
+            }
+            placeholder="e.g., /hero_illustration.svg or a direct HTTPS image URL"
+          />
+
+          <Input
+            label="About Section Headline"
+            value={formData.aboutHeadline || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, aboutHeadline: e.target.value })
+            }
+            placeholder="A builder across the whole stack."
+          />
+
+          <Textarea
+            label="Footer Tagline"
+            value={formData.footerTagline || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, footerTagline: e.target.value })
+            }
+            rows={2}
+            placeholder="Building calm, dependable software — open to roles and selective freelance work."
+          />
+
           <Input
             label="Title / Role"
             required
