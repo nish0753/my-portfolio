@@ -32,7 +32,7 @@ const DEFAULT_SKILLS: Skill[] = [
 ];
 
 export function useSkills() {
-  const [skills, setSkills] = useState<Skill[]>(DEFAULT_SKILLS);
+  const [skills, setSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -23,12 +23,14 @@ const DEFAULT_EXPERIENCE: ExperienceItem[] = [
 ];
 
 export function useExperience() {
-  const [items, setItems] = useState<ExperienceItem[]>(DEFAULT_EXPERIENCE);
+  const [items, setItems] = useState<ExperienceItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isDefault, setIsDefault] = useState(true);
 
   useEffect(() => {
     if (!db) {
       setItems(DEFAULT_EXPERIENCE);
+      setIsDefault(true);
       setLoading(false);
       return;
     }
@@ -46,12 +48,19 @@ export function useExperience() {
             }) as ExperienceItem,
         );
 
-        setItems(experienceData.length > 0 ? experienceData : DEFAULT_EXPERIENCE);
+        if (experienceData.length > 0) {
+          setItems(experienceData);
+          setIsDefault(false);
+        } else {
+          setItems(DEFAULT_EXPERIENCE);
+          setIsDefault(true);
+        }
         setLoading(false);
       },
       (error) => {
         console.error("Error fetching experience:", error);
         setItems(DEFAULT_EXPERIENCE);
+        setIsDefault(true);
         setLoading(false);
       },
     );
@@ -59,5 +68,5 @@ export function useExperience() {
     return () => unsubscribe();
   }, []);
 
-  return { items, loading };
+  return { items, loading, isDefault };
 }

@@ -52,7 +52,7 @@ const DEFAULT_EDUCATION: EducationItem[] = [
 ];
 
 export function useEducation() {
-  const [items, setItems] = useState<EducationItem[]>(DEFAULT_EDUCATION);
+  const [items, setItems] = useState<EducationItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

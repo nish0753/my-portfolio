@@ -88,7 +88,7 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen py-12 px-6">
+    <div className="min-h-screen py-12 px-6 admin-dashboard text-[#2b2620]">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div

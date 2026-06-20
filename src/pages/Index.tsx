@@ -1,5 +1,5 @@
-
 import React from 'react';
+import ScrollProgress from '@/components/ScrollProgress';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import Experience from '@/components/Experience';
@@ -12,6 +12,7 @@ import Footer from '@/components/Footer';
 const Index = () => {
   return (
     <div className="min-h-screen relative bg-slate-950">
+      <ScrollProgress />
       <Navbar />
       <HeroSection />
       <Experience />

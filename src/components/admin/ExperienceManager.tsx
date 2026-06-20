@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Plus, Trash2, Save } from "lucide-react";
+import { Plus, Trash2, Save, ArrowUp, ArrowDown } from "lucide-react";
 import {
   collection,
   addDoc,
   deleteDoc,
   doc,
   updateDoc,
+  setDoc,
 } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { useExperience, type ExperienceItem } from "../../hooks/useExperience";
@@ -15,7 +16,7 @@ import Textarea from "../admin-ui/Textarea";
 import GlassCard from "../admin-ui/GlassCard";
 
 export default function ExperienceManager() {
-  const { items } = useExperience();
+  const { items, isDefault } = useExperience();
   const [newItem, setNewItem] = useState({
     role: "",
     company: "",
@@ -37,12 +38,15 @@ export default function ExperienceManager() {
     }
 
     try {
+      // Give the new entry a smaller order than every existing one so it
+      // sorts to the very top (newest experience shown first).
+      const minOrder = items.length ? Math.min(...items.map((i) => i.order ?? 0)) : 0;
       await addDoc(collection(db, "experience"), {
         role: newItem.role,
         company: newItem.company,
         year: newItem.year,
         description: newItem.description,
-        order: items.length,
+        order: minOrder - 1,
       });
       setNewItem({
         role: "",
@@ -57,8 +61,40 @@ export default function ExperienceManager() {
     }
   };
 
+  const handleMoveUp = async (index: number) => {
+    if (index === 0 || !db || isDefault) return;
+    try {
+      const current = items[index];
+      const above = items[index - 1];
+      const currentOrder = current.order ?? index;
+      const aboveOrder = above.order ?? index - 1;
+      await updateDoc(doc(db, "experience", current.id), { order: aboveOrder });
+      await updateDoc(doc(db, "experience", above.id), { order: currentOrder });
+    } catch (error) {
+      console.error("Error reordering:", error);
+    }
+  };
+
+  const handleMoveDown = async (index: number) => {
+    if (index >= items.length - 1 || !db || isDefault) return;
+    try {
+      const current = items[index];
+      const below = items[index + 1];
+      const currentOrder = current.order ?? index;
+      const belowOrder = below.order ?? index + 1;
+      await updateDoc(doc(db, "experience", current.id), { order: belowOrder });
+      await updateDoc(doc(db, "experience", below.id), { order: currentOrder });
+    } catch (error) {
+      console.error("Error reordering:", error);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     if (!db) return;
+    if (isDefault) {
+      alert("This is a default entry. Add your own entries first, then delete this one.");
+      return;
+    }
     if (!window.confirm("Are you sure you want to delete this experience item?"))
       return;
 
@@ -85,7 +121,15 @@ export default function ExperienceManager() {
     if (!db || !editingId) return;
 
     try {
-      await updateDoc(doc(db, "experience", editingId), editData);
+      if (isDefault) {
+        // Default item doesn't exist in Firestore — create it as a real doc
+        await setDoc(doc(db, "experience", editingId), {
+          ...editData,
+          order: 0,
+        });
+      } else {
+        await updateDoc(doc(db, "experience", editingId), editData);
+      }
       setEditingId(null);
       setEditData({});
       alert("Item updated successfully!");
@@ -145,7 +189,7 @@ export default function ExperienceManager() {
           <p className="text-gray-400">No experience entries added yet.</p>
         ) : (
           <div className="space-y-2">
-            {items.map((item) => (
+            {items.map((item, index) => (
               <div
                 key={item.id}
                 className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-glass-border"
@@ -211,6 +255,22 @@ export default function ExperienceManager() {
                         {item.description}
                       </p>
                     </div>
+                    <Button
+                      onClick={() => handleMoveUp(index)}
+                      variant="ghost"
+                      size="sm"
+                      disabled={index === 0 || isDefault}
+                    >
+                      <ArrowUp size={16} />
+                    </Button>
+                    <Button
+                      onClick={() => handleMoveDown(index)}
+                      variant="ghost"
+                      size="sm"
+                      disabled={index === items.length - 1 || isDefault}
+                    >
+                      <ArrowDown size={16} />
+                    </Button>
                     <Button
                       onClick={() => handleEdit(item)}
                       variant="ghost"
