@@ -109,7 +109,7 @@ const Navbar = () => {
           <a
             href="#contact"
             onClick={(e) => handleNavClick(e, '#contact')}
-            className="btn-primary text-xs py-1.5 px-3 flex items-center gap-1.5 font-mono shadow-sm"
+            className="btn-primary text-xs py-1.5 px-3 hidden sm:inline-flex items-center gap-1.5 font-mono shadow-sm"
           >
             <Briefcase className="w-3.5 h-3.5" />
             <span>hire me</span>

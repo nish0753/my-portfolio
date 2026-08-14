@@ -86,13 +86,13 @@ const HeroSection = () => {
       className="relative min-h-screen flex items-center overflow-hidden bg-grid pt-24 pb-20"
       id="hero"
     >
-      <div className="float-dot" style={{ width: '500px', height: '500px', top: '5%', left: '-150px', background: 'var(--accent)' }}></div>
-      <div className="float-dot" style={{ width: '600px', height: '600px', bottom: '-200px', right: '-200px', background: 'var(--accent-2)', animationDelay: '-5s' }}></div>
+      <div className="float-dot hidden md:block" style={{ width: '500px', height: '500px', top: '5%', left: '-150px', background: 'var(--accent)' }}></div>
+      <div className="float-dot hidden md:block" style={{ width: '600px', height: '600px', bottom: '-200px', right: '-200px', background: 'var(--accent-2)', animationDelay: '-5s' }}></div>
       <div ref={mouseGlowRef} className="mouse-glow" id="mouseGlow"></div>
 
-      <div className="relative max-w-7xl mx-auto px-6 w-full z-10">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 w-full z-10">
         <div className="max-w-5xl">
-          <div className="flex items-center gap-3 mb-8 font-mono text-xs flex-wrap" style={{ color: 'var(--muted)' }}>
+          <div className="flex items-center gap-3 mb-6 sm:mb-8 font-mono text-xs flex-wrap" style={{ color: 'var(--muted)' }}>
             <span className="tag">Portfolio</span>
             <span>·</span>
             <span>v2.0.0</span>
@@ -102,47 +102,47 @@ const HeroSection = () => {
             </span>
           </div>
 
-          <h1 className="font-mono font-bold mb-8" style={{ fontSize: 'clamp(2.5rem, 7.5vw, 6.5rem)', lineHeight: 1.02, letterSpacing: '-0.045em' }}>
+          <h1 className="font-mono font-bold mb-6 sm:mb-8" style={{ fontSize: 'clamp(1.75rem, 6.5vw, 6.5rem)', lineHeight: 1.05, letterSpacing: '-0.045em' }}>
             <span style={{ color: 'var(--muted)' }}>$</span>{' '}
             <span id="typewriter" className="cursor">{typedText}</span>
           </h1>
 
-          <p className="font-display text-2xl md:text-3xl mb-5" style={{ fontStyle: 'italic', fontWeight: 400, color: 'var(--fg)', lineHeight: 1.3 }}>
+          <p className="font-display text-xl sm:text-2xl md:text-3xl mb-4 sm:mb-5" style={{ fontStyle: 'italic', fontWeight: 400, color: 'var(--fg)', lineHeight: 1.3 }}>
             {profile.heroHeadline || 'Crafting clean, performant, and memorable web experiences — one line of code at a time.'}
           </p>
 
-          <p className="text-base md:text-lg mb-12 max-w-2xl" style={{ color: 'var(--muted)', lineHeight: 1.6 }}>
+          <p className="text-sm sm:text-base md:text-lg mb-8 sm:mb-12 max-w-2xl" style={{ color: 'var(--muted)', lineHeight: 1.6 }}>
             I'm <span style={{ color: 'var(--fg)', fontWeight: 500 }}>{profile.name || 'Nishant Kumar'}</span> — a {profile.title || 'Data Scientist & ML Engineer'}. I specialize in turning complex problems into elegant, interactive interfaces. Always learning, always building.
           </p>
 
-          <div className="flex flex-wrap gap-4 mb-20">
-            <a href="#contact" onClick={(e) => scrollToSection(e, 'contact')} className="btn-primary flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-12 md:mb-20">
+            <a href="#contact" onClick={(e) => scrollToSection(e, 'contact')} className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto">
               <Briefcase className="w-4 h-4" />
               <span>hire me</span>
             </a>
 
-            <a href="#projects" onClick={(e) => scrollToSection(e, 'projects')} className="btn-secondary flex items-center gap-2">
+            <a href="#projects" onClick={(e) => scrollToSection(e, 'projects')} className="btn-secondary flex items-center justify-center gap-2 w-full sm:w-auto">
               <span>view my work</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </a>
 
             {resume?.url ? (
-              <a href={resume.url} target="_blank" rel="noopener noreferrer" className="btn-secondary flex items-center gap-2">
+              <a href={resume.url} target="_blank" rel="noopener noreferrer" className="btn-secondary flex items-center justify-center gap-2 w-full sm:w-auto">
                 <FileText className="w-3.5 h-3.5" />
                 <span>view resume</span>
               </a>
             ) : null}
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 max-w-3xl">
             {(profile.stats && profile.stats.length > 0 ? profile.stats : [
               { value: "6+", label: "years experience" },
               { value: "40+", label: "projects shipped" },
               { value: "15+", label: "happy clients" },
               { value: "∞", label: "cups of coffee" },
             ]).map((stat, idx) => (
-              <div key={idx}>
-                <div className="font-mono font-bold text-3xl md:text-4xl" style={{ color: 'var(--accent)' }}>
+              <div key={idx} className="p-3 sm:p-0 bg-slate-900/20 sm:bg-transparent rounded-lg border border-white/5 sm:border-0">
+                <div className="font-mono font-bold text-2xl sm:text-3xl md:text-4xl" style={{ color: 'var(--accent)' }}>
                   {stat.value}
                 </div>
                 <div className="font-mono text-xs uppercase tracking-widest mt-2" style={{ color: 'var(--muted)' }}>

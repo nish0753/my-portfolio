@@ -90,31 +90,31 @@ const CodeSnippetShowcase = () => {
   };
 
   return (
-    <section className="py-24 md:py-32 px-6" id="snippets" style={{ background: 'var(--bg-elev)' }}>
+    <section className="py-16 md:py-32 px-4 sm:px-6" id="snippets" style={{ background: 'var(--bg-elev)' }}>
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-12 gap-12 items-start">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           <div className="lg:col-span-4 lg:sticky" style={{ top: '120px' }}>
             <div className="font-mono text-xs uppercase tracking-widest mb-4 flex items-center gap-2" style={{ color: 'var(--accent)' }}>
               <Cpu className="w-3.5 h-3.5" />
               // a piece of my craft
             </div>
-            <h2 className="font-display font-black text-4xl md:text-5xl mb-6" style={{ letterSpacing: '-0.03em', lineHeight: 1.05 }}>
+            <h2 className="font-display font-black text-2xl sm:text-3xl md:text-5xl mb-4 sm:mb-6" style={{ letterSpacing: '-0.03em', lineHeight: 1.15 }}>
               <span style={{ fontStyle: 'italic', fontWeight: 400 }}>askGroqRAG</span>
               <span style={{ fontStyle: 'normal', letterSpacing: '0.08em' }} className="ml-0.5">( )</span> — the engine powering this portfolio's AI assistant.
             </h2>
-            <p className="text-base mb-8" style={{ color: 'var(--muted)', lineHeight: 1.65 }}>
+            <p className="text-sm sm:text-base mb-6 sm:mb-8" style={{ color: 'var(--muted)', lineHeight: 1.65 }}>
               The interactive <strong style={{ color: 'var(--fg)' }}>"ASK AI"</strong> button on this site isn't a hardcoded template — it's a context-aware Retrieval-Augmented Generation (RAG) system built with LLaMA-3.3 70B, real-time knowledge graphs, and zero-latency local fallback.
             </p>
-            <ul className="space-y-3 font-mono text-sm mb-8" style={{ color: 'var(--fg-dim)' }}>
+            <ul className="space-y-2.5 sm:space-y-3 font-mono text-xs sm:text-sm mb-6 sm:mb-8" style={{ color: 'var(--fg-dim)' }}>
               <li className="flex items-center gap-3"><span style={{ color: 'var(--accent)' }}>→</span> LLaMA-3.3-70B RAG architecture</li>
               <li className="flex items-center gap-3"><span style={{ color: 'var(--accent)' }}>→</span> PyTorch vector embeddings & retrieval</li>
               <li className="flex items-center gap-3"><span style={{ color: 'var(--accent)' }}>→</span> Sub-100ms ultra-fast inference</li>
             </ul>
           </div>
 
-          <div className="lg:col-span-8 space-y-6">
+          <div className="lg:col-span-8 space-y-6 max-w-full overflow-hidden">
             {/* RAG Service Code Window */}
-            <div className="code-window">
+            <div className="code-window max-w-full">
               <div className="code-header">
                 <div className="flex items-center gap-3">
                   <span className="flex gap-1.5">
@@ -136,13 +136,13 @@ const CodeSnippetShowcase = () => {
                   <span className="copy-label">{copiedService ? 'copied' : 'copy'}</span>
                 </button>
               </div>
-              <pre className="p-6 md:p-7 text-xs md:text-sm overflow-x-auto" style={{ background: 'var(--code-bg)', margin: 0, lineHeight: 1.7 }}>
+              <pre className="p-3.5 sm:p-5 md:p-7 text-[11px] sm:text-xs md:text-sm overflow-x-auto max-w-full" style={{ background: 'var(--code-bg)', margin: 0, lineHeight: 1.7 }}>
                 <code>{RAG_SERVICE_CODE}</code>
               </pre>
             </div>
 
             {/* Python Vector RAG Code Window */}
-            <div className="code-window">
+            <div className="code-window max-w-full">
               <div className="code-header">
                 <div className="flex items-center gap-3">
                   <span className="flex gap-1.5">
@@ -164,7 +164,7 @@ const CodeSnippetShowcase = () => {
                   <span className="copy-label">{copiedPython ? 'copied' : 'copy'}</span>
                 </button>
               </div>
-              <pre className="p-6 md:p-7 text-xs md:text-sm overflow-x-auto" style={{ background: 'var(--code-bg)', margin: 0, lineHeight: 1.7 }}>
+              <pre className="p-3.5 sm:p-5 md:p-7 text-[11px] sm:text-xs md:text-sm overflow-x-auto max-w-full" style={{ background: 'var(--code-bg)', margin: 0, lineHeight: 1.7 }}>
                 <code>{PYTHON_PIPELINE_CODE}</code>
               </pre>
             </div>
