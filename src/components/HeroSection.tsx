@@ -1,181 +1,164 @@
-import React, { useEffect, useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { ArrowDownCircle, ExternalLink, Mail, FileText, Code2 } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useProfile } from '@/hooks/useProfile';
 import { useResume } from '@/hooks/useResume';
-
-const renderBioWithHighlights = (bio: string) => {
-  if (!bio) return null;
-  const parts = bio.split(/(\*\*.*?\*\*)/g);
-  return parts.map((part, index) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return (
-        <span key={index} className="text-[hsl(var(--primary))] font-semibold">
-          {part.slice(2, -2)}
-        </span>
-      );
-    }
-    return <span key={index}>{part}</span>;
-  });
-};
-const SkillPill = ({ skill }: { skill: string }) => {
-  const [imgError, setImgError] = useState(false);
-
-  // Custom simpleicons mapping for common variants
-  const slug = skill.toLowerCase()
-    .replace('node.js', 'nodedotjs')
-    .replace('c++', 'cplusplus')
-    .replace('c#', 'csharp')
-    .replace(/[^a-z0-9]/g, '');
-
-  return (
-    <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/80 border border-slate-800 shadow-sm hover:border-[hsl(var(--primary)/0.5)] hover:bg-slate-800 transition-all">
-      <div className="w-5 h-5 flex items-center justify-center">
-        {!imgError ? (
-          <img
-            src={`https://cdn.simpleicons.org/${slug}`}
-            alt={skill}
-            className="w-full h-full object-contain filter drop-shadow-sm"
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <Code2 className="w-4 h-4 text-slate-400" />
-        )}
-      </div>
-      <span className="text-sm font-medium text-slate-300">{skill}</span>
-    </div>
-  );
-};
+import { ArrowRight, Paperclip, FileText, Briefcase } from 'lucide-react';
 
 const HeroSection = () => {
   const { profile } = useProfile();
   const { resume } = useResume();
+  const [typedText, setTypedText] = useState('');
+  const mouseGlowRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
 
+  // Typewriter logic
   useEffect(() => {
-    document.title = `${profile.name} - ${profile.title}`;
+    const greetings = [
+      `hello, I'm ${profile.name || 'Your Name'}.`,
+      `${(profile.title || 'frontend developer').toLowerCase()}.`,
+      "creative coder & engineer.",
+      "building calm, dependable software.",
+      "console.log('let\\'s build');",
+    ];
+
+    let gIdx = 0;
+    let cIdx = 0;
+    let deleting = false;
+    let timer: NodeJS.Timeout;
+
+    const tick = () => {
+      const current = greetings[gIdx];
+      if (deleting) {
+        cIdx--;
+        setTypedText(current.slice(0, cIdx));
+        if (cIdx === 0) {
+          deleting = false;
+          gIdx = (gIdx + 1) % greetings.length;
+          timer = setTimeout(tick, 400);
+          return;
+        }
+        timer = setTimeout(tick, 35);
+      } else {
+        cIdx++;
+        setTypedText(current.slice(0, cIdx));
+        if (cIdx === current.length) {
+          deleting = true;
+          timer = setTimeout(tick, 2200);
+          return;
+        }
+        timer = setTimeout(tick, 75 + Math.random() * 50);
+      }
+    };
+
+    tick();
+    return () => clearTimeout(timer);
   }, [profile.name, profile.title]);
 
-  const scrollToSection = (sectionId: string) => {
+  // Mouse glow tracking
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (heroRef.current && mouseGlowRef.current) {
+      const rect = heroRef.current.getBoundingClientRect();
+      mouseGlowRef.current.style.left = `${e.clientX - rect.left}px`;
+      mouseGlowRef.current.style.top = `${e.clientY - rect.top}px`;
+      mouseGlowRef.current.style.opacity = '1';
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (mouseGlowRef.current) {
+      mouseGlowRef.current.style.opacity = '0';
+    }
+  };
+
+  const scrollToSection = (e: React.MouseEvent, sectionId: string) => {
+    e.preventDefault();
     const element = document.getElementById(sectionId);
     if (element) {
-      const offset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+      const offset = element.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({ top: offset, behavior: 'smooth' });
     }
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 pt-20 pb-16 overflow-hidden">
-      {/* Subtle background pattern - theme aware */}
-      <div className="absolute inset-0 opacity-[0.5] pointer-events-none">
-        <div className="absolute top-[-6rem] right-[-4rem] w-80 h-80 rounded-full blur-3xl hero-orb-1" />
-        <div className="absolute bottom-[-6rem] left-[-4rem] w-80 h-80 rounded-full blur-3xl hero-orb-2" />
-      </div>
+    <section
+      ref={heroRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative min-h-screen flex items-center overflow-hidden bg-grid pt-24 pb-20"
+      id="hero"
+    >
+      <div className="float-dot" style={{ width: '500px', height: '500px', top: '5%', left: '-150px', background: 'var(--accent)' }}></div>
+      <div className="float-dot" style={{ width: '600px', height: '600px', bottom: '-200px', right: '-200px', background: 'var(--accent-2)', animationDelay: '-5s' }}></div>
+      <div ref={mouseGlowRef} className="mouse-glow" id="mouseGlow"></div>
 
-      {/* Mobile: Blurred background image behind text */}
-      <div className="absolute inset-0 lg:hidden pointer-events-none z-0">
-        <div className="absolute inset-0 flex items-center justify-center opacity-20">
-          <img
-            src="/hero_illustration.svg"
-            alt=""
-            className="w-full h-full object-cover blur-3xl scale-150"
-            aria-hidden="true"
-          />
-        </div>
-      </div>
-
-      <div className="container max-w-6xl mx-auto z-10 w-full relative">
-        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
-          {/* Content */}
-          <div className="w-full lg:w-1/2 text-center lg:text-left animate-fade-in relative z-20">
-            <div className="inline-block mb-4 px-3 py-1 rounded-full bg-[hsl(var(--primary)/0.12)] border border-[hsl(var(--primary)/0.25)]">
-              <span className="text-sm font-medium text-[hsl(var(--primary))]">{profile.title}</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight mb-6 text-slate-50">
-              Hi, I'm <span className="text-[hsl(var(--primary))]">{profile.name}</span>
-            </h1>
-
-            <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-6 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              {renderBioWithHighlights(profile.bio)}
-            </p>
-
-            {/* Tech Stack Icons */ }
-            <div className="flex flex-wrap items-center gap-3 mb-8 justify-center lg:justify-start">
-              {profile.heroSkills && profile.heroSkills.length > 0 ? (
-                profile.heroSkills.map((skill, index) => (
-                  <SkillPill key={`${skill}-${index}`} skill={skill} />
-                ))
-              ) : null}
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button
-                onClick={() => scrollToSection('projects')}
-                className="bg-primary text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all h-12 px-6 text-base font-medium hover:bg-[hsl(var(--primary)/0.9)]"
-              >
-                View Projects
-                <ExternalLink className="ml-2 h-4 w-4" />
-              </Button>
-
-              {resume?.url && (
-                <a
-                  href={resume.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button
-                    variant="outline"
-                    className="bg-transparent border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-slate-50 hover:border-slate-600 h-12 px-6 text-base font-medium w-full"
-                  >
-                    <FileText className="mr-2 h-4 w-4" />
-                    View Resume
-                  </Button>
-                </a>
-              )}
-
-              <Button
-                onClick={() => scrollToSection('contact')}
-                variant="outline"
-                className="bg-transparent border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-slate-50 hover:border-slate-600 h-12 px-6 text-base font-medium"
-              >
-                <Mail className="mr-2 h-4 w-4" />
-                Contact Me
-              </Button>
-            </div>
+      <div className="relative max-w-7xl mx-auto px-6 w-full z-10">
+        <div className="max-w-5xl">
+          <div className="flex items-center gap-3 mb-8 font-mono text-xs flex-wrap" style={{ color: 'var(--muted)' }}>
+            <span className="tag">Portfolio</span>
+            <span>·</span>
+            <span>v2.0.0</span>
+            <span>·</span>
+            <span className="flex items-center gap-2">
+              <span className="stat-dot"></span> available for new projects
+            </span>
           </div>
 
-          {/* Image - Desktop only */}
-          <div className="hidden lg:flex w-full lg:w-1/2 justify-center order-first lg:order-last">
-            <div className="relative w-full max-w-md">
-              <div className="absolute inset-0 rounded-2xl blur-2xl transform scale-90 hero-image-glow"></div>
-              <img
-                src="/hero_illustration.svg"
-                alt="Developer illustration"
-                className="relative z-10 w-full rounded-2xl"
-              />
-            </div>
+          <h1 className="font-mono font-bold mb-8" style={{ fontSize: 'clamp(2.5rem, 7.5vw, 6.5rem)', lineHeight: 1.02, letterSpacing: '-0.045em' }}>
+            <span style={{ color: 'var(--muted)' }}>$</span>{' '}
+            <span id="typewriter" className="cursor">{typedText}</span>
+          </h1>
+
+          <p className="font-display text-2xl md:text-3xl mb-5" style={{ fontStyle: 'italic', fontWeight: 400, color: 'var(--fg)', lineHeight: 1.3 }}>
+            {profile.heroHeadline || 'Crafting clean, performant, and memorable web experiences — one line of code at a time.'}
+          </p>
+
+          <p className="text-base md:text-lg mb-12 max-w-2xl" style={{ color: 'var(--muted)', lineHeight: 1.6 }}>
+            I'm <span style={{ color: 'var(--fg)', fontWeight: 500 }}>{profile.name || 'Nishant Kumar'}</span> — a {profile.title || 'Data Scientist & ML Engineer'}. I specialize in turning complex problems into elegant, interactive interfaces. Always learning, always building.
+          </p>
+
+          <div className="flex flex-wrap gap-4 mb-20">
+            <a href="#contact" onClick={(e) => scrollToSection(e, 'contact')} className="btn-primary flex items-center gap-2">
+              <Briefcase className="w-4 h-4" />
+              <span>hire me</span>
+            </a>
+
+            <a href="#projects" onClick={(e) => scrollToSection(e, 'projects')} className="btn-secondary flex items-center gap-2">
+              <span>view my work</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+
+            {resume?.url ? (
+              <a href={resume.url} target="_blank" rel="noopener noreferrer" className="btn-secondary flex items-center gap-2">
+                <FileText className="w-3.5 h-3.5" />
+                <span>view resume</span>
+              </a>
+            ) : null}
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl">
+            {(profile.stats && profile.stats.length > 0 ? profile.stats : [
+              { value: "6+", label: "years experience" },
+              { value: "40+", label: "projects shipped" },
+              { value: "15+", label: "happy clients" },
+              { value: "∞", label: "cups of coffee" },
+            ]).map((stat, idx) => (
+              <div key={idx}>
+                <div className="font-mono font-bold text-3xl md:text-4xl" style={{ color: 'var(--accent)' }}>
+                  {stat.value}
+                </div>
+                <div className="font-mono text-xs uppercase tracking-widest mt-2" style={{ color: 'var(--muted)' }}>
+                  {stat.label}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <button
-        onClick={() => scrollToSection('experience')}
-        className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer z-30 group touch-manipulation"
-        aria-label="Scroll to experience section"
-      >
-        <div className="relative">
-          <div className="absolute inset-0 rounded-full blur-md sm:blur-lg transition-all hero-scroll-glow scale-75 sm:scale-100"></div>
-          <ArrowDownCircle className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-slate-400 group-hover:text-[hsl(var(--primary))] transition-colors relative z-10" strokeWidth={1.5} />
-        </div>
-      </button>
-    </div>
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 font-mono text-xs flex flex-col items-center gap-3" style={{ color: 'var(--muted)' }}>
+        <span className="tracking-widest uppercase">scroll</span>
+        <div style={{ width: '1px', height: '30px', background: 'linear-gradient(to bottom, var(--accent), transparent)' }}></div>
+      </div>
+    </section>
   );
 };
 

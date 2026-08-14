@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from 'react';
+import ConstellationBackground from '@/components/ConstellationBackground';
 import ScrollProgress from '@/components/ScrollProgress';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
+import TechStack from '@/components/TechStack';
+import Projects from '@/components/Projects';
+import SkillsRadar from '@/components/SkillsRadar';
+import CodeSnippetShowcase from '@/components/CodeSnippetShowcase';
 import Experience from '@/components/Experience';
 import Education from '@/components/Education';
-import Projects from '@/components/Projects';
-import TopSkills from '@/components/TopSkills';
 import CallToAction from '@/components/CallToAction';
 import Footer from '@/components/Footer';
+import Chatbot from '@/components/Chatbot';
+import LinkedInFloatingButton from '@/components/LinkedInFloatingButton';
+import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton';
 import { useProfile } from '@/hooks/useProfile';
 
 const Index = () => {
   const { loading } = useProfile();
   const [visible, setVisible] = useState(false);
 
-  // Reveal the page only after the profile data has arrived, so the
-  // built-in placeholder content never flashes before the real data.
   useEffect(() => {
     if (!loading) {
       const id = requestAnimationFrame(() => setVisible(true));
@@ -24,16 +28,22 @@ const Index = () => {
   }, [loading]);
 
   return (
-    <div className="min-h-screen relative bg-slate-950">
+    <div className="min-h-screen relative" style={{ background: 'var(--bg)', color: 'var(--fg)' }}>
+      <ConstellationBackground />
       <ScrollProgress />
       <Navbar />
       <HeroSection />
+      <TechStack />
+      <Projects />
+      <SkillsRadar />
+      <CodeSnippetShowcase />
       <Experience />
       <Education />
-      <Projects />
-      <TopSkills />
       <CallToAction />
       <Footer />
+      <Chatbot />
+      <LinkedInFloatingButton />
+      <WhatsAppFloatingButton />
 
       {/* Loading overlay — fades out once Firebase profile data arrives */}
       <div
@@ -42,7 +52,7 @@ const Index = () => {
           position: 'fixed',
           inset: 0,
           zIndex: 200,
-          background: '#020617',
+          background: 'var(--bg)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -57,8 +67,8 @@ const Index = () => {
             width: 40,
             height: 40,
             borderRadius: '9999px',
-            border: '3px solid hsl(160 84% 39% / 0.25)',
-            borderTopColor: 'hsl(160 84% 39%)',
+            border: '3px solid rgba(var(--accent-rgb), 0.25)',
+            borderTopColor: 'var(--accent)',
           }}
         />
       </div>

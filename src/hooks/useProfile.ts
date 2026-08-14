@@ -3,6 +3,18 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import type { ProfileData } from "../components/admin/ProfileSettings";
 
+export interface StatItem {
+  value: string;
+  label: string;
+}
+
+const DEFAULT_STATS: StatItem[] = [
+  { value: "6+", label: "years experience" },
+  { value: "40+", label: "projects shipped" },
+  { value: "15+", label: "happy clients" },
+  { value: "∞", label: "cups of coffee" },
+];
+
 const DEFAULT_PROFILE: ProfileData = {
   name: "Nishant Kumar",
   title: "Data Scientist & ML Engineer",
@@ -16,6 +28,7 @@ const DEFAULT_PROFILE: ProfileData = {
   portraitUrl: "/portrait_character.png",
   aboutHeadline: "A builder across the whole stack.",
   footerTagline: "Building calm, dependable software — open to roles and selective freelance work.",
+  stats: DEFAULT_STATS,
 };
 
 export function useProfile() {

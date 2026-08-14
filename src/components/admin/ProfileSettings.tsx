@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
-import { User, Save, Loader } from "lucide-react";
+import { User, Save, Loader, Plus, Trash2 } from "lucide-react";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import Button from "../admin-ui/Button";
 import Input from "../admin-ui/Input";
 import Textarea from "../admin-ui/Textarea";
 import GlassCard from "../admin-ui/GlassCard";
+
+export interface StatItem {
+  value: string;
+  label: string;
+}
 
 export interface ProfileData {
   name: string;
@@ -14,6 +19,7 @@ export interface ProfileData {
   email: string;
   linkedin: string;
   github: string;
+  whatsappPhone?: string;
   availableForWork: boolean;
   heroSkills?: string[];
   heroSkillsText?: string;
@@ -21,7 +27,16 @@ export interface ProfileData {
   portraitUrl?: string;
   aboutHeadline?: string;
   footerTagline?: string;
+  groqApiKey?: string;
+  stats?: StatItem[];
 }
+
+const DEFAULT_STATS: StatItem[] = [
+  { value: "6+", label: "years experience" },
+  { value: "40+", label: "projects shipped" },
+  { value: "15+", label: "happy clients" },
+  { value: "∞", label: "cups of coffee" },
+];
 
 export default function ProfileSettings() {
   const [loading, setLoading] = useState(false);
@@ -33,6 +48,7 @@ export default function ProfileSettings() {
     email: "hello@example.com",
     linkedin: "https://linkedin.com/in/yourprofile",
     github: "https://github.com/yourusername",
+    whatsappPhone: "+918709808019",
     availableForWork: true,
     heroSkills: ["Python", "PyTorch", "Scikit-Learn", "LangChain"],
     heroSkillsText: "Python, PyTorch, Scikit-Learn, LangChain",
@@ -40,6 +56,8 @@ export default function ProfileSettings() {
     portraitUrl: "/portrait_character.png",
     aboutHeadline: "A builder across the whole stack.",
     footerTagline: "Building calm, dependable software — open to roles and selective freelance work.",
+    groqApiKey: "",
+    stats: DEFAULT_STATS,
   });
 
   useEffect(() => {
@@ -57,7 +75,8 @@ export default function ProfileSettings() {
         const data = docSnap.data() as ProfileData;
         setFormData({
           ...data,
-          heroSkillsText: (data.heroSkills || []).join(", ")
+          heroSkillsText: (data.heroSkills || []).join(", "),
+          stats: data.stats && data.stats.length > 0 ? data.stats : DEFAULT_STATS,
         });
       }
     } catch (error) {
@@ -65,6 +84,24 @@ export default function ProfileSettings() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleStatChange = (index: number, field: 'value' | 'label', val: string) => {
+    const newStats = [...(formData.stats || [])];
+    newStats[index] = { ...newStats[index], [field]: val };
+    setFormData({ ...formData, stats: newStats });
+  };
+
+  const handleAddStat = () => {
+    setFormData({
+      ...formData,
+      stats: [...(formData.stats || []), { value: "0", label: "new stat" }]
+    });
+  };
+
+  const handleRemoveStat = (index: number) => {
+    const newStats = (formData.stats || []).filter((_, i) => i !== index);
+    setFormData({ ...formData, stats: newStats });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -112,7 +149,7 @@ export default function ProfileSettings() {
       <div className="space-y-6">
         <div className="flex items-center gap-3">
           <User className="text-purple-400" size={28} />
-          <h2 className="text-2xl font-bold">Profile Settings</h2>
+          <h2 className="text-2xl font-bold">Profile & Contact Settings</h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -134,6 +171,25 @@ export default function ProfileSettings() {
               setFormData({ ...formData, heroHeadline: e.target.value })
             }
             placeholder="Nishant builds calm, dependable software."
+          />
+
+          <Input
+            label="WhatsApp Phone Number (with country code, e.g. +918709808019)"
+            value={formData.whatsappPhone || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, whatsappPhone: e.target.value })
+            }
+            placeholder="+918709808019"
+          />
+
+          <Input
+            label="Groq API Key (Optional — for Groq LLM Chatbot)"
+            type="password"
+            value={formData.groqApiKey || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, groqApiKey: e.target.value })
+            }
+            placeholder="gsk_..."
           />
 
           <Input
@@ -237,6 +293,53 @@ export default function ProfileSettings() {
             </span>
           </label>
 
+          <div className="space-y-3 pt-6 border-t border-slate-700/50">
+            <div className="flex items-center justify-between">
+              <label className="block text-sm font-medium text-slate-300">
+                Hero Statistics Grid (Editable Stats)
+              </label>
+              <Button
+                type="button"
+                onClick={handleAddStat}
+                className="text-xs py-1 px-3"
+              >
+                <Plus size={14} className="mr-1" /> Add Stat
+              </Button>
+            </div>
+            <p className="text-xs text-slate-400">
+              Customize the numbers/symbols and labels displayed in the Hero section stats grid on the homepage.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {(formData.stats || []).map((stat, idx) => (
+                <div key={idx} className="flex items-center gap-2 p-3 bg-slate-800/40 border border-slate-700/50 rounded-lg">
+                  <div className="w-1/3">
+                    <Input
+                      placeholder="Value (e.g. 6+)"
+                      value={stat.value}
+                      onChange={(e) => handleStatChange(idx, 'value', e.target.value)}
+                    />
+                  </div>
+                  <div className="w-2/3">
+                    <Input
+                      placeholder="Label (e.g. YEARS EXPERIENCE)"
+                      value={stat.label}
+                      onChange={(e) => handleStatChange(idx, 'label', e.target.value)}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveStat(idx)}
+                    className="p-2 text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 rounded transition-colors"
+                    title="Remove stat"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="pt-4">
             <Button type="submit" disabled={saving} className="w-full">
               {saving ? (
@@ -247,7 +350,7 @@ export default function ProfileSettings() {
               ) : (
                 <>
                   <Save className="mr-2" size={20} />
-                  Save Profile
+                  Save Profile Settings
                 </>
               )}
             </Button>

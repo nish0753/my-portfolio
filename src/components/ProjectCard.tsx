@@ -7,4 +7,9 @@ export interface Project {
   liveUrl?: string;
   githubUrl?: string;
   featured?: boolean;
+  category?: string;
+  problemStatement?: string;
+  metrics?: { label: string; value: string }[];
+  architectureHighlights?: string[];
+  order?: number;
 }

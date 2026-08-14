@@ -1,126 +1,161 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
-
-const links = [
-  { id: 'experience', label: 'Experience' },
-  { id: 'education',  label: 'Education' },
-  { id: 'projects',   label: 'Projects' },
-  { id: 'top-skills', label: 'Skills' },
-];
+import React, { useState } from 'react';
+import { useTheme } from '@/hooks/useTheme';
+import { useProfile } from '@/hooks/useProfile';
+import { useVisitors } from '@/hooks/useVisitors';
+import { Moon, Sun, Terminal, Menu, X, Briefcase } from 'lucide-react';
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled]       = useState(false);
+  const { theme, setTheme } = useTheme();
+  const { profile } = useProfile();
+  const { stats } = useVisitors();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeId, setActiveId]           = useState('');
 
-  useEffect(() => {
-    const sectionIds = [...links.map(l => l.id), 'contact'];
-
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-
-      // Scroll-spy: pick the last section whose top has passed the header line
-      const scrollPos = window.scrollY + 120;
-      let current = '';
-      for (const id of sectionIds) {
-        const el = document.getElementById(id);
-        if (el && el.getBoundingClientRect().top + window.pageYOffset <= scrollPos) {
-          current = id;
-        }
-      }
-      setActiveId(current);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const targetId = href.replace('#', '');
+    const element = document.getElementById(targetId);
     if (element) {
-      const offsetPosition = element.getBoundingClientRect().top + window.pageYOffset - 80;
-      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+      const offset = element.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({ top: offset, behavior: 'smooth' });
       setMobileMenuOpen(false);
     }
   };
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'py-3 bg-slate-950/95 backdrop-blur-md shadow-lg border-b border-slate-800/50'
-          : 'py-4 bg-slate-950/80 backdrop-blur-sm'
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-opacity-20 border-b transition-all duration-300"
+      style={{
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        background: 'rgba(var(--accent-rgb), 0.02)',
+        borderColor: 'var(--border)',
+      }}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <nav className="flex justify-between items-center">
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="font-display text-xl sm:text-2xl font-bold text-slate-50 hover:text-[hsl(var(--primary))] transition-colors select-none"
-          >
-            Nishant Kumar
-          </button>
+      <nav className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a
+          href="#hero"
+          onClick={(e) => handleNavClick(e, '#hero')}
+          className="font-mono font-bold text-lg flex items-center"
+          style={{ color: 'var(--fg)', textDecoration: 'none' }}
+        >
+          <span style={{ color: 'var(--accent)' }}>/</span>
+          {profile?.name ? profile.name.toLowerCase().replace(/\s+/g, '-') : 'nishant-kumar'}
+          <span className="logo-cursor"></span>
+        </a>
 
-          {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-8">
-            {links.map(({ id, label }) => (
-              <button
-                key={id}
-                onClick={() => scrollToSection(id)}
-                className={`transition-colors text-sm font-medium ${
-                  activeId === id
-                    ? 'text-[hsl(var(--primary))]'
-                    : 'text-slate-400 hover:text-slate-50'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-            <Button
-              className="bg-primary text-primary-foreground text-sm px-5 py-2 h-auto hover:bg-[hsl(var(--primary)/0.9)]"
-              onClick={() => scrollToSection('contact')}
+        {/* Desktop Links */}
+        <div className="hidden md:flex items-center gap-8 font-mono text-sm">
+          <a href="#projects" onClick={(e) => handleNavClick(e, '#projects')} className="hover-link">
+            projects
+          </a>
+          <a href="#snippets" onClick={(e) => handleNavClick(e, '#snippets')} className="hover-link">
+            code
+          </a>
+          <a href="#experience" onClick={(e) => handleNavClick(e, '#experience')} className="hover-link">
+            experience
+          </a>
+          <a href="#education" onClick={(e) => handleNavClick(e, '#education')} className="hover-link">
+            academics
+          </a>
+          <a href="#contact" onClick={(e) => handleNavClick(e, '#contact')} className="hover-link">
+            contact
+          </a>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {/* Visitor count or availability badge */}
+          {stats.totalVisitors > 0 ? (
+            <div className="stat-pill hidden lg:inline-flex" title="Total visitors">
+              <span className="stat-dot"></span>
+              <span>{stats.totalVisitors} visits</span>
+            </div>
+          ) : profile?.availableForWork ? (
+            <a href="#contact" onClick={(e) => handleNavClick(e, '#contact')} className="stat-pill hidden sm:inline-flex" title="Available for Work">
+              <span className="stat-dot"></span>
+              <span className="text-xs" style={{ color: 'var(--accent-2)' }}>●</span>
+              <span>open to work</span>
+            </a>
+          ) : null}
+
+          {/* Theme Selector Toggle */}
+          <div className="theme-toggle" role="group" aria-label="Theme selector">
+            <button
+              className={`theme-btn ${theme === 'dark' ? 'active' : ''}`}
+              onClick={() => setTheme('dark')}
+              title="Dark Theme"
+              aria-label="Dark theme"
             >
-              Contact
-            </Button>
+              <Moon size={13} />
+            </button>
+            <button
+              className={`theme-btn ${theme === 'light' ? 'active' : ''}`}
+              onClick={() => setTheme('light')}
+              title="Light Theme"
+              aria-label="Light theme"
+            >
+              <Sun size={13} />
+            </button>
+            <button
+              className={`theme-btn ${theme === 'cyber' ? 'active' : ''}`}
+              onClick={() => setTheme('cyber')}
+              title="Cyber Theme"
+              aria-label="Cyber theme"
+            >
+              <Terminal size={13} />
+            </button>
           </div>
 
-          {/* Mobile toggle */}
+          {/* Hire Me CTA Button */}
+          <a
+            href="#contact"
+            onClick={(e) => handleNavClick(e, '#contact')}
+            className="btn-primary text-xs py-1.5 px-3 flex items-center gap-1.5 font-mono shadow-sm"
+          >
+            <Briefcase className="w-3.5 h-3.5" />
+            <span>hire me</span>
+          </a>
+
+          {/* Mobile menu toggle button */}
           <button
-            className="md:hidden text-slate-400 hover:text-slate-50 transition-colors"
+            className="md:hidden p-1.5 text-muted hover:text-fg transition-colors border rounded border-slate-800"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
+            aria-label="Toggle Navigation"
+            style={{ borderColor: 'var(--border)' }}
           >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
-        </nav>
-      </div>
+        </div>
+      </nav>
 
-      {/* Mobile menu */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-slate-950/98 backdrop-blur-lg border-t border-slate-800/50 py-4 px-4">
-          <div className="flex flex-col space-y-3">
-            {links.map(({ id, label }) => (
-              <button
-                key={id}
-                onClick={() => scrollToSection(id)}
-                className={`transition-colors py-2 text-left text-sm font-medium ${
-                  activeId === id
-                    ? 'text-[hsl(var(--primary))]'
-                    : 'text-slate-400 hover:text-slate-50'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-            <Button
-              className="bg-primary text-primary-foreground justify-center mt-2 hover:bg-[hsl(var(--primary)/0.9)]"
-              onClick={() => scrollToSection('contact')}
-            >
-              Contact
-            </Button>
-          </div>
+        <div
+          className="md:hidden py-6 px-6 border-b font-mono text-sm space-y-4"
+          style={{ background: 'var(--bg-elev)', borderColor: 'var(--border)', color: 'var(--fg)' }}
+        >
+          <a
+            href="#contact"
+            onClick={(e) => handleNavClick(e, '#contact')}
+            className="btn-primary text-xs py-2 px-4 flex items-center justify-center gap-2 w-full mb-3"
+          >
+            <Briefcase className="w-4 h-4" />
+            <span>hire me</span>
+          </a>
+          <a href="#projects" onClick={(e) => handleNavClick(e, '#projects')} className="block hover-link">
+            // projects
+          </a>
+          <a href="#snippets" onClick={(e) => handleNavClick(e, '#snippets')} className="block hover-link">
+            // code snippets
+          </a>
+          <a href="#experience" onClick={(e) => handleNavClick(e, '#experience')} className="block hover-link">
+            // experience
+          </a>
+          <a href="#education" onClick={(e) => handleNavClick(e, '#education')} className="block hover-link">
+            // academics
+          </a>
+          <a href="#contact" onClick={(e) => handleNavClick(e, '#contact')} className="block hover-link">
+            // contact
+          </a>
         </div>
       )}
     </header>

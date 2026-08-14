@@ -31,3 +31,6 @@ dist-ssr
 # Temporary script files
 extract_data.js
 extracted_data.json
+
+# Nested projects
+my-portfolio/

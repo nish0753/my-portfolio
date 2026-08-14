@@ -17,43 +17,50 @@ import GlassCard from "../admin-ui/GlassCard";
 
 const SAMPLE_PROJECTS = [
   {
-    title: "Customer Churn Prediction Model",
+    title: "Analytics Dashboard Pro",
     description:
-      "Machine learning model to predict customer churn using Random Forest and XGBoost algorithms. Achieved 92% accuracy with feature engineering and hyperparameter tuning. Includes interactive dashboard for model insights.",
+      "A real-time analytics platform handling 10k+ events per second. Built with React, WebSockets, and D3.js for rich data visualization.",
     imageUrl:
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop",
-    technologies: [
-      "Python",
-      "Scikit-learn",
-      "Pandas",
-      "Matplotlib",
-      "Streamlit",
-    ],
+    technologies: ["React", "WebSockets", "D3.js", "Python"],
+    category: "2024 — SaaS Platform",
     liveUrl: "https://example.com",
-    githubUrl: "https://github.com/yourusername/churn-prediction",
+    githubUrl: "https://github.com/yourusername/analytics-pro",
     featured: true,
+    problemStatement: "Monitoring high-volume real-time event streams without client browser lag or server memory leaks.",
+    metrics: [
+      { label: "Event Rate", value: "10k+/sec" },
+      { label: "Latencies", value: "< 18ms" },
+      { label: "Lighthouse", value: "99/100" },
+    ],
+    architectureHighlights: [
+      "WebSocket connection pooling with automatic reconnection backoff",
+      "Virtual windowing rendering 100,000 data points smoothly with Canvas/D3",
+      "Modular dashboard widget system with customizable layout state",
+    ],
   },
   {
-    title: "COVID-19 Data Analysis Dashboard",
+    title: "LLM Document Search (RAG)",
     description:
-      "Interactive dashboard analyzing global COVID-19 trends with real-time data visualization. Features time-series analysis, predictive modeling, and geographical heatmaps for infection rates and vaccination progress.",
+      "Generative AI pipeline indexing multi-page PDFs into vector embeddings. Built with Python, LangChain, FAISS, and Streamlit.",
     imageUrl:
       "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=800&h=600&fit=crop",
-    technologies: ["Python", "Plotly", "Dash", "NumPy", "SQL"],
+    technologies: ["Python", "RAG", "LangChain", "FAISS"],
+    category: "2024 — AI & Data",
     liveUrl: "https://example.com",
-    githubUrl: "https://github.com/yourusername/covid-dashboard",
+    githubUrl: "https://github.com/yourusername/rag-pdf-search",
     featured: true,
-  },
-  {
-    title: "NLP Sentiment Analysis System",
-    description:
-      "Natural Language Processing system for sentiment analysis of product reviews and social media posts. Uses BERT transformers and achieves 89% accuracy on multi-class classification tasks.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1455849318743-b2233052fcff?w=800&h=600&fit=crop",
-    technologies: ["Python", "PyTorch", "Transformers", "NLTK", "Flask"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com/yourusername/sentiment-analysis",
-    featured: false,
+    problemStatement: "Extracting and searching unstructured documents with contextual precision and low retrieval hallucination.",
+    metrics: [
+      { label: "Accuracy", value: "94.8%" },
+      { label: "Retrieval Speed", value: "120ms" },
+      { label: "Docs Processed", value: "50k+ pages" },
+    ],
+    architectureHighlights: [
+      "FAISS vector store with semantic chunk overlap optimization",
+      "LangChain conversational retrieval chain with source attribution",
+      "Streamlit web UI for interactive chat & document preview",
+    ],
   },
 ];
 
@@ -67,11 +74,15 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
+    category: "",
     imageUrl: "",
     technologies: "",
     liveUrl: "",
     githubUrl: "",
     featured: false,
+    problemStatement: "",
+    metricsText: "",
+    architectureHighlightsText: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -86,17 +97,42 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
     setLoading(true);
 
     try {
+      // Parse metrics: "10k+/sec:Event Rate, < 18ms:Latency"
+      const parsedMetrics = formData.metricsText
+        .split(",")
+        .map((m) => {
+          const parts = m.split(":");
+          if (parts.length === 2) {
+            return { value: parts[0].trim(), label: parts[1].trim() };
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      // Parse architecture highlights: line by line
+      const parsedHighlights = formData.architectureHighlightsText
+        .split("\n")
+        .map((h) => h.replace(/^-\s*/, "").trim())
+        .filter(Boolean);
+
       const projectData = {
-        ...formData,
-        technologies: formData.technologies.split(",").map((t) => t.trim()),
+        title: formData.title,
+        description: formData.description,
+        category: formData.category || "Featured Project",
+        imageUrl: formData.imageUrl,
+        technologies: formData.technologies.split(",").map((t) => t.trim()).filter(Boolean),
+        liveUrl: formData.liveUrl,
+        githubUrl: formData.githubUrl,
+        featured: formData.featured,
+        problemStatement: formData.problemStatement,
+        metrics: parsedMetrics,
+        architectureHighlights: parsedHighlights,
         updatedAt: new Date().toISOString(),
       };
 
       if (editingProject) {
-        // Update existing project
         await updateDoc(doc(db, "projects", editingProject.id), projectData);
       } else {
-        // Add new project
         await addDoc(collection(db, "projects"), {
           ...projectData,
           createdAt: new Date().toISOString(),
@@ -119,11 +155,17 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
     setFormData({
       title: project.title,
       description: project.description,
+      category: project.category || "",
       imageUrl: project.imageUrl || "",
-      technologies: project.technologies.join(", "),
+      technologies: (project.technologies || []).join(", "),
       liveUrl: project.liveUrl || "",
       githubUrl: project.githubUrl || "",
       featured: project.featured || false,
+      problemStatement: project.problemStatement || "",
+      metricsText: (project.metrics || [])
+        .map((m) => `${m.value}:${m.label}`)
+        .join(", "),
+      architectureHighlightsText: (project.architectureHighlights || []).join("\n"),
     });
     setIsFormOpen(true);
   };
@@ -149,25 +191,25 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
     setFormData({
       title: "",
       description: "",
+      category: "",
       imageUrl: "",
       technologies: "",
       liveUrl: "",
       githubUrl: "",
       featured: false,
+      problemStatement: "",
+      metricsText: "",
+      architectureHighlightsText: "",
     });
     setEditingProject(null);
   };
 
   const handleAddSampleProjects = async () => {
     if (!db) {
-      alert(
-        "Firebase is not configured. Please set up your Firebase credentials.",
-      );
+      alert("Firebase is not configured.");
       return;
     }
-
-    if (!confirm("This will add 3 sample projects. Continue?")) return;
-
+    if (!confirm("This will add sample projects. Continue?")) return;
     setLoading(true);
     try {
       for (const project of SAMPLE_PROJECTS) {
@@ -177,12 +219,9 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
           updatedAt: new Date().toISOString(),
         });
       }
-      alert(
-        "Sample projects added successfully! You can now edit or delete them.",
-      );
+      alert("Sample projects added successfully!");
     } catch (error) {
       console.error("Error adding sample projects:", error);
-      alert("Failed to add sample projects. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -220,7 +259,7 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold">Manage Projects</h2>
+        <h2 className="text-3xl font-bold">Manage Projects & Case Studies</h2>
         <div className="flex gap-3">
           <Button
             onClick={handleAddSampleProjects}
@@ -228,7 +267,7 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
             disabled={loading}
           >
             <Sparkles className="mr-2" size={20} />
-            Load Sample Data
+            Load Sample Projects
           </Button>
           <Button
             onClick={() => {
@@ -259,7 +298,7 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
             <GlassCard>
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-2xl font-bold">
-                  {editingProject ? "Edit Project" : "Add New Project"}
+                  {editingProject ? "Edit Project & Case Study" : "Add New Project"}
                 </h3>
                 <button
                   onClick={() => setIsFormOpen(false)}
@@ -277,17 +316,55 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
                   onChange={(e) =>
                     setFormData({ ...formData, title: e.target.value })
                   }
-                  placeholder="My Awesome Project"
+                  placeholder="Analytics Dashboard Pro"
+                />
+
+                <Input
+                  label="Category (e.g. 2024 — SaaS Platform or AI & Data)"
+                  value={formData.category}
+                  onChange={(e) =>
+                    setFormData({ ...formData, category: e.target.value })
+                  }
+                  placeholder="2024 — SaaS Platform"
                 />
 
                 <Textarea
-                  label="Description"
+                  label="Short Description"
                   required
                   value={formData.description}
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
-                  placeholder="A brief description of your project..."
+                  placeholder="A brief overview of your project..."
+                  rows={3}
+                />
+
+                <Textarea
+                  label="Case Study: Problem Statement & Challenge"
+                  value={formData.problemStatement}
+                  onChange={(e) =>
+                    setFormData({ ...formData, problemStatement: e.target.value })
+                  }
+                  placeholder="Describe the technical problem or business challenge solved..."
+                  rows={3}
+                />
+
+                <Input
+                  label="Case Study Metrics (format: Value:Label, Value:Label)"
+                  value={formData.metricsText}
+                  onChange={(e) =>
+                    setFormData({ ...formData, metricsText: e.target.value })
+                  }
+                  placeholder="10k+/sec:Event Rate, < 18ms:Latency, 99/100:Lighthouse"
+                />
+
+                <Textarea
+                  label="Architecture & Technical Highlights (one bullet point per line)"
+                  value={formData.architectureHighlightsText}
+                  onChange={(e) =>
+                    setFormData({ ...formData, architectureHighlightsText: e.target.value })
+                  }
+                  placeholder="WebSocket connection pooling with backoff&#10;Virtual windowing with D3&#10;Modular widget architecture"
                   rows={4}
                 />
 
@@ -301,13 +378,13 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
                 />
 
                 <Input
-                  label="Technologies (comma-separated)"
+                  label="Technologies / Tags (comma-separated)"
                   required
                   value={formData.technologies}
                   onChange={(e) =>
                     setFormData({ ...formData, technologies: e.target.value })
                   }
-                  placeholder="React, TypeScript, Tailwind CSS"
+                  placeholder="React, TypeScript, Tailwind CSS, Python"
                 />
 
                 <Input
@@ -369,7 +446,6 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
             key={project.id}
             className="flex items-center justify-between"
           >
-            {/* Position Number */}
             <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-slate-800/80 border border-slate-700/50 flex items-center justify-center text-lg font-bold text-[hsl(var(--primary))] mr-4">
               {index + 1}
             </div>
@@ -379,7 +455,7 @@ export default function ProjectForm({ projects }: ProjectFormProps) {
                 {project.description}
               </p>
               <div className="flex gap-2 mt-2">
-                {project.technologies.slice(0, 3).map((tech, i) => (
+                {(project.technologies || []).slice(0, 4).map((tech, i) => (
                   <span
                     key={i}
                     className="text-xs px-2 py-1 rounded bg-slate-800/50 border border-slate-700/50"

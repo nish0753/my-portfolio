@@ -1,265 +1,251 @@
-import React, { useState } from 'react';
-import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Github, ArrowRight, Loader } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
 import { useProjects } from '@/hooks/useProjects';
+import { ExternalLink, Github, Sparkles, FileText } from 'lucide-react';
+import ProjectDrawer, { ProjectDetail } from '@/components/ProjectDrawer';
 
-interface ProjectProps {
-  title: string;
-  description: string;
-  imageUrl?: string;
-  tags: string[];
-  link?: string;
-  githubLink?: string;
-}
-
-// Mobile Card - Compact and minimal
-const ProjectCardMobile = ({ title, description, imageUrl, tags, link, githubLink }: ProjectProps) => {
-  const [showAllTags, setShowAllTags] = useState(false);
-  const displayedTags = showAllTags ? tags : tags.slice(0, 2);
-  const remainingCount = tags.length - 2;
-
-  return (
-    <div className="group relative overflow-hidden rounded-none md:rounded-xl bg-slate-900/50 border-x-0 md:border-x border-y border-slate-800/50 hover:border-[hsl(var(--primary)/0.5)] transition-all mb-6 w-full">
-      {/* Content */}
-      <div className="p-6">
-        <h3 className="text-xl font-display font-semibold text-white mb-2 group-hover:text-[hsl(var(--primary))] transition-colors">
-          {title}
-        </h3>
-
-        <p className="text-slate-400 text-sm mb-4 leading-relaxed line-clamp-2">
-          {description}
-        </p>
-
-        {/* Tags - Minimal */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {displayedTags.map((tag, idx) => (
-            <Badge
-              key={idx}
-              className="bg-[hsl(var(--primary)/0.15)] text-[hsl(var(--primary))] border border-[hsl(var(--primary)/0.3)] text-xs font-medium px-2.5 py-1"
-            >
-              {tag}
-            </Badge>
-          ))}
-          {tags.length > 2 && !showAllTags && (
-            <Badge
-              onClick={() => setShowAllTags(true)}
-              className="bg-slate-800/50 text-slate-400 border border-slate-700/50 text-xs font-medium px-2.5 py-1 cursor-pointer hover:bg-slate-700/50 transition-all"
-            >
-              +{remainingCount}
-            </Badge>
-          )}
-          {showAllTags && tags.length > 2 && (
-            <Badge
-              onClick={() => setShowAllTags(false)}
-              className="bg-slate-800/50 text-slate-400 border border-slate-700/50 text-xs font-medium px-2.5 py-1 cursor-pointer hover:bg-slate-700/50 transition-all"
-            >
-              Less
-            </Badge>
-          )}
-        </div>
-
-        {/* Links */}
-        <div className="flex items-center gap-3">
-          {link && (
-            <a
-              href={link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-[hsl(var(--primary))] text-white rounded-lg text-sm font-medium hover:bg-[hsl(var(--primary)/0.9)] transition-all active:scale-95"
-              aria-label={`Visit ${title} website`}
-            >
-              View
-              <ArrowRight className="h-3.5 w-3.5" />
-            </a>
-          )}
-          {githubLink && (
-            <a
-              href={githubLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-slate-500 hover:text-[hsl(var(--primary))] transition-colors"
-              aria-label={`View ${title} on GitHub`}
-            >
-              <Github className="h-5 w-5" />
-            </a>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Desktop Showcase - Full width with alternating layouts
-const ProjectShowcaseDesktop = ({ title, description, imageUrl, tags, link, githubLink, index = 0 }: ProjectProps & { index?: number }) => {
-  const [imageError, setImageError] = useState(false);
-  const [showAllTags, setShowAllTags] = useState(false);
-  const isEven = index % 2 === 0;
-  const displayedTags = showAllTags ? tags : tags.slice(0, 3);
-  const remainingCount = tags.length - 3;
-
-  return (
-    <div className="group relative overflow-hidden rounded-xl md:rounded-2xl mb-10 sm:mb-12 md:mb-12">
-      <div className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-stretch min-h-[450px] sm:min-h-[500px] md:min-h-[600px]`}>
-        {/* Image Section */}
-        <div className="relative w-full md:w-1/2 min-h-[300px] sm:min-h-[350px] md:min-h-full">
-          {imageUrl && !imageError ? (
-            <>
-              <img
-                src={imageUrl}
-                alt={title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                onError={() => setImageError(true)}
-              />
-              {isEven ? (
-                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent hidden md:block" />
-              ) : (
-                <div className="absolute inset-0 bg-gradient-to-l from-black/70 via-black/50 to-transparent hidden md:block" />
-              )}
-            </>
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-700 opacity-50">{title.charAt(0)}</div>
-              </div>
-            </div>
-          )}
-
-          {/* Decorative elements */}
-          <div className="absolute top-0 left-0 w-full h-full pointer-events-none hidden md:block">
-            <div className={`absolute ${isEven ? 'top-4 right-4' : 'top-4 left-4'} w-24 h-24 md:w-32 md:h-32 bg-[hsl(var(--primary)/0.1)] rounded-full blur-3xl group-hover:bg-[hsl(var(--primary)/0.2)] transition-all`} />
-          </div>
-        </div>
-
-        {/* Content Section */}
-        <div className={`relative w-full md:w-1/2 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-10 sm:p-12 md:p-12 lg:p-16 flex flex-col justify-center ${isEven ? 'md:border-l-2 border-slate-800' : 'md:border-r-2 border-slate-800'}`}>
-          <div className="max-w-xl w-full">
-            {/* Tags */}
-            <div className="flex flex-wrap gap-3 sm:gap-3 mb-5 sm:mb-6">
-              {displayedTags.map((tag, idx) => (
-                <Badge
-                  key={idx}
-                  className="bg-[hsl(var(--primary)/0.15)] text-[hsl(var(--primary))] border border-[hsl(var(--primary)/0.3)] text-xs sm:text-sm font-medium px-3.5 py-2 sm:px-4 sm:py-2 hover:bg-[hsl(var(--primary)/0.25)] transition-colors"
-                >
-                  {tag}
-                </Badge>
-              ))}
-              {tags.length > 3 && !showAllTags && (
-                <Badge
-                  onClick={() => setShowAllTags(true)}
-                  className="bg-slate-800/50 text-slate-400 border border-slate-700/50 text-xs sm:text-sm font-medium px-3.5 py-2 sm:px-4 sm:py-2 cursor-pointer hover:bg-slate-700/50 hover:text-slate-300 hover:border-[hsl(var(--primary)/0.5)] transition-all"
-                >
-                  +{remainingCount} more
-                </Badge>
-              )}
-              {showAllTags && tags.length > 3 && (
-                <Badge
-                  onClick={() => setShowAllTags(false)}
-                  className="bg-slate-800/50 text-slate-400 border border-slate-700/50 text-xs sm:text-sm font-medium px-3.5 py-2 sm:px-4 sm:py-2 cursor-pointer hover:bg-slate-700/50 hover:text-slate-300 hover:border-[hsl(var(--primary)/0.5)] transition-all"
-                >
-                  Show less
-                </Badge>
-              )}
-            </div>
-
-            {/* Title */}
-            <h3 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white mb-5 sm:mb-6 md:mb-6 group-hover:text-[hsl(var(--primary))] transition-colors leading-tight">
-              {title}
-            </h3>
-
-            {/* Description */}
-            <p className="text-slate-300 text-base sm:text-lg md:text-xl lg:text-xl mb-8 sm:mb-10 md:mb-10 leading-relaxed">
-              {description}
-            </p>
-
-            {/* Links */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-4">
-              {link && (
-                <a
-                  href={link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:px-6 sm:py-3 bg-[hsl(var(--primary))] text-white rounded-lg text-base sm:text-base font-medium hover:bg-[hsl(var(--primary)/0.9)] transition-all active:scale-95 sm:hover:scale-105 shadow-lg hover:shadow-xl group/link"
-                  aria-label={`Visit ${title} website`}
-                >
-                  View Live
-                  <ArrowRight className="h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
-                </a>
-              )}
-              {githubLink && (
-                <a
-                  href={githubLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:px-6 sm:py-3 bg-slate-800/50 border border-slate-700 text-slate-300 rounded-lg text-base sm:text-base font-medium hover:bg-slate-800 hover:text-white hover:border-[hsl(var(--primary)/0.5)] transition-all active:scale-95"
-                  aria-label={`View ${title} on GitHub`}
-                >
-                  <Github className="h-4 w-4" />
-                  Code
-                </a>
-              )}
-            </div>
-          </div>
-
-          {/* Decorative corner accent */}
-          <div className={`absolute ${isEven ? 'top-0 right-0' : 'top-0 left-0'} w-20 h-20 md:w-32 md:h-32 bg-[hsl(var(--primary)/0.05)] rounded-bl-full md:rounded-none ${isEven ? 'md:rounded-tl-full' : 'md:rounded-tr-full'} opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden md:block`} />
-        </div>
-      </div>
-
-      {/* Hover overlay effect */}
-      <div className="absolute inset-0 bg-[hsl(var(--primary)/0.03)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-    </div>
-  );
-};
+const DEFAULT_PROJECTS: ProjectDetail[] = [
+  {
+    title: 'Analytics Dashboard Pro',
+    description: 'A real-time analytics platform handling 10k+ events per second. Built with React, WebSockets, and D3.js for rich data visualization.',
+    tags: ['React', 'WebSockets', 'D3.js', 'Python'],
+    category: '2024 — SaaS Platform',
+    liveUrl: 'https://github.com/yourusername',
+    githubUrl: 'https://github.com/yourusername',
+    problemStatement: 'Monitoring high-volume real-time event streams without client browser lag or server memory leaks.',
+    metrics: [
+      { label: 'Event Rate', value: '10k+/sec' },
+      { label: 'Latencies', value: '< 18ms' },
+      { label: 'Lighthouse', value: '99/100' },
+    ],
+    architectureHighlights: [
+      'WebSocket connection pooling with automatic reconnection backoff',
+      'Virtual windowing rendering 100,000 data points smoothly with Canvas/D3',
+      'Modular dashboard widget system with customizable layout state',
+    ],
+  },
+  {
+    title: 'LLM Document Search (RAG)',
+    description: 'Generative AI pipeline indexing multi-page PDFs into vector embeddings. Built with Python, LangChain, FAISS, and Streamlit.',
+    tags: ['Python', 'RAG', 'LangChain', 'FAISS'],
+    category: '2024 — AI & Data',
+    liveUrl: 'https://github.com/yourusername',
+    githubUrl: 'https://github.com/yourusername',
+    problemStatement: 'Extracting and searching unstructured documents with contextual precision and low retrieval hallucination.',
+    metrics: [
+      { label: 'Accuracy', value: '94.8%' },
+      { label: 'Retrieval Speed', value: '120ms' },
+      { label: 'Docs Processed', value: '50k+ pages' },
+    ],
+    architectureHighlights: [
+      'FAISS vector store with semantic chunk overlap optimization',
+      'LangChain conversational retrieval chain with source attribution',
+      'Streamlit web UI for interactive chat & document preview',
+    ],
+  },
+  {
+    title: 'Niche Store Frontend',
+    description: 'A high-performance e-commerce experience with a 98+ Lighthouse score. Implemented server-side rendering and optimized Core Web Vitals.',
+    tags: ['Next.js', 'Tailwind', 'Stripe'],
+    category: '2024 — E-commerce',
+    liveUrl: 'https://github.com/yourusername',
+    githubUrl: 'https://github.com/yourusername',
+    problemStatement: 'Creating an ultra-fast checkout flow with instant page transitions and server-side rendering.',
+    metrics: [
+      { label: 'Lighthouse Score', value: '98/100' },
+      { label: 'First Contentful Paint', value: '0.4s' },
+      { label: 'Conversion Boost', value: '+32%' },
+    ],
+    architectureHighlights: [
+      'Next.js App Router with ISR (Incremental Static Regeneration)',
+      'Stripe Elements payment integration with webhook validation',
+      'Zero layout shift image loading with Blurhash placeholders',
+    ],
+  },
+  {
+    title: 'Interactive 3D Portfolio',
+    description: 'An award-winning interactive 3D website using Three.js and GLSL shaders. Pushed the boundaries of what a portfolio can be.',
+    tags: ['WebGL', 'Three.js', 'GLSL'],
+    category: '2023 — Creative Coding',
+    liveUrl: 'https://github.com/yourusername',
+    githubUrl: 'https://github.com/yourusername',
+    problemStatement: 'Rendering complex 3D scenes on mobile devices while maintaining 60 FPS frame rates.',
+    metrics: [
+      { label: 'Target Frame Rate', value: '60 FPS' },
+      { label: 'Asset Weight', value: '< 2.4 MB' },
+      { label: 'Mobile Compatibility', value: '100%' },
+    ],
+    architectureHighlights: [
+      'Custom GLSL fragment shaders for procedural particle fields',
+      'Instanced mesh geometry reduction for optimized GPU draw calls',
+      'Responsive canvas resizing with device pixel ratio scaling',
+    ],
+  },
+];
 
 const Projects = () => {
-  const { projects: firebaseProjects, loading } = useProjects();
+  const { projects: firebaseProjects } = useProjects();
+  const [selectedTag, setSelectedTag] = useState<string>('All');
+  const [activeProject, setActiveProject] = useState<ProjectDetail | null>(null);
 
-  // Map Firebase data shape to the component's expected shape
-  const projects = firebaseProjects.map(p => ({
-    title: p.title,
-    description: p.description,
-    imageUrl: p.imageUrl || '',
-    tags: p.technologies || [],
-    link: p.liveUrl || '',
-    githubLink: p.githubUrl || '',
-  }));
+  const rawProjects: ProjectDetail[] = firebaseProjects.length > 0
+    ? firebaseProjects.map((p) => ({
+        title: p.title,
+        description: p.description,
+        tags: p.technologies || [],
+        category: p.category || 'Featured Project',
+        liveUrl: p.liveUrl || p.githubUrl || '#',
+        githubUrl: p.githubUrl,
+      }))
+    : DEFAULT_PROJECTS;
+
+  // Collect all unique tags
+  const allTags = useMemo(() => {
+    const tagsSet = new Set<string>();
+    tagsSet.add('All');
+    rawProjects.forEach((p) => p.tags.forEach((t) => tagsSet.add(t)));
+    return Array.from(tagsSet).slice(0, 7);
+  }, [rawProjects]);
+
+  const filteredProjects = useMemo(() => {
+    if (selectedTag === 'All') return rawProjects;
+    return rawProjects.filter((p) =>
+      p.tags.some((t) => t.toLowerCase() === selectedTag.toLowerCase())
+    );
+  }, [rawProjects, selectedTag]);
 
   return (
-    <section id="projects" className="py-16 sm:py-20 md:py-24 lg:py-28 px-0 sm:px-4 md:px-6 lg:px-8 bg-slate-950">
-      <div className="container mx-auto max-w-7xl">
-        <div className="flex flex-col items-center text-center mb-12 sm:mb-16 md:mb-20 px-4 sm:px-0">
-          <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full bg-[hsl(var(--primary)/0.1)] border border-[hsl(var(--primary)/0.25)]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--primary))] shadow-[0_0_8px_hsl(var(--primary))]" />
-            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[hsl(var(--primary))]">03 · Portfolio</span>
+    <section className="py-24 md:py-32 px-6" id="projects">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-end justify-between mb-12 flex-wrap gap-6">
+          <div>
+            <div className="font-mono text-xs uppercase tracking-widest mb-4 flex items-center gap-2" style={{ color: 'var(--accent)' }}>
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>// featured work</span>
+            </div>
+            <h2 className="font-display font-black text-5xl md:text-7xl" style={{ letterSpacing: '-0.035em', lineHeight: 1 }}>
+              Selected <span style={{ fontStyle: 'italic', fontWeight: 400 }}>Projects</span>
+            </h2>
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold leading-tight">
-            <span className="text-slate-50">What I've </span>
-            <span className="bg-gradient-to-r from-[hsl(var(--primary))] to-emerald-300 bg-clip-text text-transparent">Built</span>
-          </h2>
-          <div className="mt-4 h-1 w-16 rounded-full bg-gradient-to-r from-transparent via-[hsl(var(--primary))] to-transparent" />
-          <p className="mt-4 text-base sm:text-lg text-slate-400 max-w-2xl">
-            Each project represents a journey into solving real-world problems with technical excellence and attention to detail.
-          </p>
+          <a
+            href="https://github.com/endurance21"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-secondary"
+          >
+            view all
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
         </div>
 
-        {/* Mobile: Compact Cards */}
-        <div className="md:hidden space-y-6">
-          {projects.map((project, index) => (
-            <div key={index} className="animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
-              <ProjectCardMobile {...project} />
-            </div>
+        {/* Category Filters */}
+        <div className="flex flex-wrap items-center gap-2 mb-12 font-mono text-xs">
+          {allTags.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => setSelectedTag(tag)}
+              className="px-3.5 py-1.5 rounded-full border transition-all duration-300 cursor-pointer"
+              style={{
+                borderColor: selectedTag === tag ? 'var(--accent)' : 'var(--border)',
+                background: selectedTag === tag ? 'var(--accent)' : 'var(--bg-elev)',
+                color: selectedTag === tag ? 'var(--bg)' : 'var(--fg-dim)',
+                fontWeight: selectedTag === tag ? 600 : 400,
+              }}
+            >
+              {tag}
+            </button>
           ))}
         </div>
 
-        {/* Desktop: Full Width Showcase */}
-        <div className="hidden md:block space-y-0">
-          {projects.map((project, index) => (
-            <div key={index} className="animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
-              <ProjectShowcaseDesktop {...project} index={index} />
-            </div>
-          ))}
+        <div className="grid md:grid-cols-3 gap-6">
+          {filteredProjects.map((project, idx) => {
+            const numStr = (idx + 1).toString().padStart(2, '0');
+            const primaryTag = project.tags[0] || 'Web';
+
+            return (
+              <div
+                key={idx}
+                className="article-card flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="card-num">{numStr}</div>
+                    <span className="tag">{primaryTag}</span>
+                  </div>
+                  <div className="font-mono text-xs mb-4" style={{ color: 'var(--muted)' }}>
+                    {project.category}
+                  </div>
+                  <h3
+                    onClick={() => setActiveProject(project)}
+                    className="font-display font-bold text-2xl mb-4 leading-tight hover:underline cursor-pointer"
+                  >
+                    {project.title}
+                  </h3>
+                  <p className="text-sm mb-6" style={{ color: 'var(--muted)', lineHeight: 1.65 }}>
+                    {project.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-1.5 mb-8">
+                    {project.tags.map((t, tIdx) => (
+                      <span
+                        key={tIdx}
+                        className="text-[11px] font-mono px-2 py-0.5 rounded border"
+                        style={{ borderColor: 'var(--border)', color: 'var(--fg-dim)', background: 'var(--bg-elev-2)' }}
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between font-mono text-xs pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
+                  <button
+                    onClick={() => setActiveProject(project)}
+                    className="flex items-center gap-2 uppercase tracking-widest hover-link cursor-pointer border-none bg-transparent"
+                    style={{ color: 'var(--accent)' }}
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>case study</span>
+                    <span className="arrow">→</span>
+                  </button>
+
+                  <div className="flex items-center gap-3">
+                    {project.liveUrl && (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover-link"
+                        style={{ color: 'var(--muted)' }}
+                        title="Live Demo"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
+                    {project.githubUrl && (
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover-link"
+                        style={{ color: 'var(--muted)' }}
+                        title="GitHub Source"
+                      >
+                        <Github className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
+
+      {/* Slide-over Case Study Drawer */}
+      <ProjectDrawer
+        project={activeProject}
+        onClose={() => setActiveProject(null)}
+      />
     </section>
   );
 };
